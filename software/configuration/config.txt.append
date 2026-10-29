@@ -1,0 +1,38 @@
+# ===== GameboyPi v1.1 – an /boot/config.txt ANHÄNGEN (RetroPie 4.8, Pi Zero 2 W) =====
+
+# --- Display: fbcp-ili9341 spiegelt den HDMI-Framebuffer auf das SPI-Display ---
+# KEIN dtparam=spi=on (fbcp-ili9341 steuert SPI0 direkt)
+hdmi_force_hotplug=1
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt=320 240 60 1 0 0 0
+disable_overscan=1
+
+# --- Audio: PWM-Stereo auf GPIO12 (L) / GPIO13 (R) -> RC-Filter -> Klinke / PAM8302 ---
+dtparam=audio=on
+dtoverlay=audremap,pins_12_13
+
+# --- I2C für den ADS1115 (Akkuspannung, Adresse 0x48) ---
+dtparam=i2c_arm=on
+
+# --- Debug-Konsole an J8 (GND / TX=GPIO14 / RX=GPIO15, 115200 Baud, 3,3 V!) ---
+enable_uart=1
+
+# --- Tasten als Tastatur (in EmulationStation als Eingabegerät anlernen) ---
+dtoverlay=gpio-key,gpio=5,keycode=103,label="UP"
+dtoverlay=gpio-key,gpio=6,keycode=108,label="DOWN"
+dtoverlay=gpio-key,gpio=19,keycode=105,label="LEFT"
+dtoverlay=gpio-key,gpio=26,keycode=106,label="RIGHT"
+dtoverlay=gpio-key,gpio=23,keycode=45,label="A"
+dtoverlay=gpio-key,gpio=22,keycode=44,label="B"
+dtoverlay=gpio-key,gpio=17,keycode=28,label="START"
+dtoverlay=gpio-key,gpio=27,keycode=54,label="SELECT"
+
+# --- Sicheres Ausschalten ---
+# Schalter auf AUS -> GPIO16 low -> Linux fährt herunter
+dtoverlay=gpio-shutdown,gpio_pin=16,active_low=1,gpio_pull=up
+# GPIO4 bleibt high solange Linux läuft und geht nach dem Herunterfahren low
+# -> Q2 sperrt -> PowerBoost EN wird über Q1 auf GND gezogen -> Strom aus.
+# (Während des Bootens hält der Schalter in Stellung EIN die Versorgung, daher ist der
+#  undefinierte Pegel von GPIO4 vor dem Laden des Overlays unkritisch.)
+dtoverlay=gpio-poweroff,gpiopin=4,active_low=1

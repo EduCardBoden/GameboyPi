@@ -1,0 +1,11 @@
+[Unit]
+Description=GameboyPi Akku-Ueberwachung (ADS1115 + PowerBoost LBO)
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/gameboypi/battery_monitor.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

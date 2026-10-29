@@ -1,0 +1,37 @@
+Pos;Referenz;Menge;Bauteil;Wert/Typ;Footprint/Form;Bezugsquelle (Beispiel);Preis_EUR_Stk_ca;Summe_EUR_ca;Hinweis
+1;J1;1;Raspberry Pi Zero 2 W;mit angeloeteter 2x20 Stiftleiste (WH);Modul 65x30 mm;Berrybase / Reichelt / pi-shop;19.00;19.00;Zero W / Zero gehen auch (langsamer)
+2;J1;1;Buchsenleiste 2x20;2,54 mm, 8,5 mm hoch;THT;Reichelt / Berrybase;1.50;1.50;auf die Platinen-RUECKSEITE loeten
+3;-;4;Abstandsbolzen + Schrauben;M2,5 x 11 mm (Pi);-;Berrybase;0.50;2.00;
+4;-;1;microSD-Karte;32 GB, A1;-;Fachhandel;7.00;7.00;
+5;J2;1;Display 2,4in SPI ILI9341;MSP2401 (ohne Touch, 4,3 mm dick);77,18 x 42,72 mm;AliExpress / lcdwiki-Haendler;7.00;7.00;Gehaeuse ist auf MSP2401 ausgelegt; MSP2402 (Touch) ist dicker -> lcd_gap/lcd_spacer anpassen. Andere 2,4in-Module (70,5 mm) passen nicht
+6;H6,H7;2;Abstandshuelse + Schraube + Mutter;M3 x 4 mm Nylon, M3 x 10, M3-Mutter;-;Reichelt;0.40;0.80;Display-Halterung
+7;J10;1;Adafruit PowerBoost 1000C;Laden 1 A + 5,2-V-Boost, Load-Sharing;36,07 x 22,86 mm;Adafruit #2465 / Berrybase;22.00;22.00;mit beiliegender 1x8-Stiftleiste
+8;BT1;1;LiPo-Akku 1S 103450;3,7 V, >= 2000 mAh, mit Schutzschaltung, JST-PH 2.0;50 x 34 x 10 mm;Adafruit #2011-kompatibel / Akku-Fachhandel;10.00;10.00;POLARITAET am JST-Stecker vor dem Einstecken pruefen!
+9;J3;1;Adafruit PAM8302;2,5 W Mono Class-D;24,13 x 15,24 mm;Adafruit #2130;5.00;5.00;
+10;LS1;1;Lautsprecher;PUI Audio AS02008MR-5-R, 20 mm, 8 Ohm, 0,5 W, 4,2 mm;-;DigiKey / Mouser;3.00;3.00;
+11;J11,J12;1;Adafruit ADS1115 STEMMA QT;16-bit ADC, I2C 0x48;25,4 x 17,8 mm;Adafruit #1085;15.00;15.00;Nachbauten haben andere Pinbelegung - nur Adafruit-Layout passt
+12;SW1-SW8;8;Taster;Omron B3F-1020 (6 x 6 x 5,0 mm);SW_PUSH_6mm;DigiKey / Mouser;0.25;2.00;
+13;SW9;1;Schiebeschalter abgewinkelt;CK OS102011MA1Q;THT;Mouser / Reichelt;0.70;0.70;
+14;J7;1;Klinkenbuchse 3,5 mm stereo mit Schaltkontakten;CUI SJ1-3525N;THT;Mouser / DigiKey;1.50;1.50;
+15;RV1;1;Potentiometer horizontal;Bourns PTV09A-2020F-A103, 10 kOhm log, abgeflachte 6-mm-Achse;THT;DigiKey / Mouser;1.50;1.50;Achse auf ca. 4 mm ausserhalb kuerzen
+16;Q1,Q2;2;N-MOSFET;BS170;TO-92;Reichelt;0.25;0.50;
+17;D2;1;Schottky-Diode;BAT85;DO-35;Reichelt;0.10;0.10;
+18;D1;1;LED rot;Lite-On LTL-4221N 3 mm;THT;DigiKey 160-1139-ND;0.17;0.17;
+19;R1;1;Widerstand;1 kOhm;Axial 0207;Reichelt;0.05;0.05;
+20;R2,R4;2;Widerstand;270 Ohm;Axial 0207;Reichelt;0.05;0.10;
+21;R3,R5;2;Widerstand;150 Ohm;Axial 0207;Reichelt;0.05;0.10;
+22;R6,R7,R10;3;Widerstand;10 kOhm;Axial 0207;Reichelt;0.05;0.15;
+23;R8;1;Widerstand;1 MOhm;Axial 0207;Reichelt;0.05;0.05;
+24;R9,R11,R12;3;Widerstand;100 kOhm;Axial 0207;Reichelt;0.05;0.15;
+25;C2,C4;2;Keramikkondensator;33 nF;Scheibe 2,5 mm RM;Reichelt;0.10;0.20;
+26;C6;1;Keramikkondensator;100 nF;Scheibe 2,5 mm RM;Reichelt;0.10;0.10;
+27;C3,C5;2;Elko;Panasonic ECE-A1AKS101 100 uF 10 V, D6,3 x 6 mm;CP_Radial_D6.3mm_P2.50mm;DigiKey P963-ND;0.32;0.64;niedrige Bauform noetig (Front-Hohlraum 8,8 mm)
+28;C1;1;Elko;Rubycon 10YXJ470M6.3X11 470 uF 10 V;CP_Radial_D6.3mm_P2.50mm;DigiKey 1189-1069-ND;0.30;0.30;
+29;J8;1;Stiftleiste;1x3, 2,54 mm (UART);THT;Reichelt;0.10;0.10;
+30;TP1-TP6;6;Testpunkt;Loetpad 1,5 mm;-;-;0.00;0.00;auf der Platine
+31;-;4;Gehaeuseschrauben;M2,5 x 20 (Zylinder- oder Senkkopf);-;Reichelt;0.10;0.40;schneiden ins 2,2-mm-Loch
+32;PCB;1;Leiterplatte GameboyPi v1.1;2 Lagen, 1,6 mm, 78 x 134 mm, HASL;-;JLCPCB / PCBWay / Aisler;3.00;15.00;Mindestmenge 5 Stk., inkl. Versand ca. 15 EUR
+33;-;1;Filament;PLA matt schwarz ca. 65 g + Silk-PLA silber und lila je ca. 5 g;-;-;1.50;1.50;GBX-Design: Gehaeuse schwarz, GB/Slogans silber, X/Linie/A-B-Tasten lila
+34;-;1;Kleinmaterial;Kapton, Moosgummi 0,5 mm, doppels. Klebeband, Litze 0,14 mm2;-;-;3.00;3.00;
+35;-;1;optional Displayscheibe;Acryl 62 x 46 x 1 mm;-;Zuschnitt;2.00;2.00;
+;;;;;;;Summe ca.;122.10;Richtwerte Herbst 2026, ohne Werkzeug; Preise schwanken je nach Haendler

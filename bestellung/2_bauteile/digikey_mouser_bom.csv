@@ -1,0 +1,24 @@
+Manufacturer Part Number,Manufacturer,Quantity,DigiKey Part Number,Description
+2465,Adafruit,1,1528-1349-ND,J10 PowerBoost 1000C Laden + 5V Boost
+2130,Adafruit,1,1528-2130-ND,J3 PAM8302 Mono Verstaerker 2.5W
+1085,Adafruit,1,1528-1085-ND,J11 J12 ADS1115 16-bit ADC Breakout
+OS102011MA1QN1,C&K,1,CKN9559-ND,SW9 Schiebeschalter SPDT abgewinkelt
+SJ1-3525N,Same Sky (CUI Devices),1,CP1-3525N-ND,J7 Klinkenbuchse 3.5mm stereo mit Schaltkontakten
+PTV09A-2020F-A103,Bourns,1,PTV09A-2020F-A103-ND,RV1 Poti 10k log liegend abgeflachte Achse
+B3F-1020,Omron,10,SW402-ND,SW1-SW8 Taster 6x6x5mm (2 Reserve)
+BS170,onsemi,3,BS170-ND,Q1 Q2 N-MOSFET TO-92 (1 Reserve)
+BAT85S-TAP,Vishay,2,BAT85S-TAPCT-ND,D2 Schottky-Diode DO-35 (1 Reserve)
+AS02008MR-5-R,PUI Audio,1,668-1411-ND,LS1 Lautsprecher 20mm 8 Ohm 0.5W
+PPTC202LFBN-RC,Sullins,1,S6104-ND,J1 Buchsenleiste 2x20 RM2.54 8.5mm (Pi)
+PRPC003SAAN-RC,Sullins,1,35-PRPC003SAAN-RC-ND,J8 Stiftleiste 1x3 (UART)
+MFR-25FBF52-1K,Yageo,2,1.00KXBK-ND,R1 Widerstand 1k 0.25W
+MFR-25FBF52-270R,Yageo,3,MFR-25FBF52-270R-ND,R2 R4 Widerstand 270R 0.25W
+MFR-25FBF52-150R,Yageo,3,150XBK-ND,R3 R5 Widerstand 150R 0.25W
+MFR-25FBF52-10K,Yageo,10,10.0KXBK-ND,R6 R7 R10 Widerstand 10k 0.25W
+MFR-25FBF52-1M,Yageo,2,1.00MXBK-ND,R8 Widerstand 1M 0.25W
+MFR-25FBF52-100K,Yageo,10,100KXBK-ND,R9 R11 R12 Widerstand 100k 0.25W
+K333K15X7RF5TL2,Vishay,3,BC1081CT-ND,C2 C4 Keramik 33nF RM2.5
+K104K15X7RF5TL2,Vishay,2,BC1084CT-ND,C6 Keramik 100nF RM2.5
+ECE-A1AKS101,Panasonic,3,P963-ND,C3 C5 Elko 100uF 10V D6.3x6mm RM2.5 (1 Reserve)
+10YXJ470M6.3X11,Rubycon,1,1189-1069-ND,C1 Elko 470uF 10V D6.3x11 RM2.5
+LTL-4221N,Lite-On,2,160-1139-ND,D1 LED rot 3mm (1 Reserve)

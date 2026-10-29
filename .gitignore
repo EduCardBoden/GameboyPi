@@ -1,0 +1,21 @@
+# Externe Tools (neu herunterladbar)
+tools/freerouting/*.jar
+tools/freerouting/*.exe
+tools/freerouting/*.zip
+
+# Build-Ausgaben / Caches
+build/
+__pycache__/
+*.pyc
+
+# KiCad Temp-/Backup-Dateien
+*-backups/
+*.lck
+fp-info-cache
+*.kicad_prl
+_autosave-*
+*.bak
+
+# OS
+Thumbs.db
+desktop.ini

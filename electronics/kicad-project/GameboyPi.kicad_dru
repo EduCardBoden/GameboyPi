@@ -1,0 +1,4 @@
+(version 1)
+(rule "thermal_spokes"
+	(condition "A.Type == 'Pad'")
+	(constraint min_resolved_spokes (min 1)))

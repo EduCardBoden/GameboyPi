@@ -1,0 +1,22 @@
+{
+  "python.defaultInterpreterPath": "${env:LOCALAPPDATA}/Programs/KiCad/10.0/bin/python.exe",
+  "python.analysis.extraPaths": ["${env:LOCALAPPDATA}/Programs/KiCad/10.0/bin/Lib/site-packages"],
+  "openscad.launchPath": "C:/Program Files/OpenSCAD/openscad.exe",
+  "files.associations": {
+    "*.kicad_sch": "scheme",
+    "*.kicad_pcb": "scheme",
+    "*.kicad_sym": "scheme",
+    "*.kicad_mod": "scheme",
+    "*.kicad_dru": "scheme",
+    "*.append": "properties"
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "tools/**": true
+  },
+  "search.exclude": {
+    "**/*.kicad_pcb": true,
+    "**/*.stl": true,
+    "electronics/gerber/**": true
+  }
+}

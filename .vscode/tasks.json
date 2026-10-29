@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Alles bauen (Platine + Gehäuse)",
+      "dependsOn": ["Platine bauen (KiCad)", "Gehäuse bauen (OpenSCAD)"],
+      "dependsOrder": "sequence",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Platine bauen (KiCad)",
+      "detail": "Schaltplan -> PCB -> Freerouting -> ERC/DRC -> Gerber, BOM, Pick&Place, PDFs",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File electronics/kicad-project/build.ps1",
+      "problemMatcher": []
+    },
+    {
+      "label": "Gehäuse bauen (OpenSCAD)",
+      "detail": "Kollisionsprüfung + STL-Export + Vorschaubilder (dauert ~25 min)",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File mechanical/cad-source/build.ps1",
+      "problemMatcher": []
+    },
+    {
+      "label": "Nur STLs exportieren",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File mechanical/cad-source/build.ps1 -SkipCheck",
+      "problemMatcher": []
+    },
+    {
+      "label": "DRC-Bericht anzeigen",
+      "type": "shell",
+      "command": "code electronics/kicad-project/build/drc.rpt",
+      "problemMatcher": []
+    },
+    {
+      "label": "Platine in KiCad öffnen",
+      "type": "shell",
+      "command": "Start-Process \"$env:LOCALAPPDATA/Programs/KiCad/10.0/bin/kicad.exe\" -ArgumentList \"${workspaceFolder}/electronics/kicad-project/GameboyPi.kicad_pro\"",
+      "options": { "shell": { "executable": "powershell.exe", "args": ["-Command"] } },
+      "problemMatcher": []
+    },
+    {
+      "label": "Gehäuse in OpenSCAD öffnen (Live-Vorschau)",
+      "type": "shell",
+      "command": "Start-Process 'C:/Program Files/OpenSCAD/openscad.exe' -ArgumentList '${workspaceFolder}/mechanical/cad-source/gameboy_pi_case.scad'",
+      "options": { "shell": { "executable": "powershell.exe", "args": ["-Command"] } },
+      "problemMatcher": []
+    }
+  ]
+}
