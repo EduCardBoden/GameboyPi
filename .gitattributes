@@ -1,0 +1,9 @@
+# Dateien für den Raspberry Pi immer mit Linux-Zeilenenden
+*.sh       text eol=lf
+*.service  text eol=lf
+*.append   text eol=lf
+software/configuration/*.py text eol=lf
+
+# CAD-Dateien unverändert lassen
+*.stl   -text
+*.step  -text
