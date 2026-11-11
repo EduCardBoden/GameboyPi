@@ -6,13 +6,13 @@ Tragbarer Retro-Handheld mit eigener Trägerplatine (KiCad 10), 3D-druckbarem Ge
 | | |
 |---|---|
 | Rechner | Raspberry Pi Zero 2 W (Zero W / Zero kompatibel) |
-| Display | 2,4" ILI9341 SPI, 320×240 (MSP2401), 60 fps mit fbcp-ili9341 |
+| Display | 2,4" ILI9341 SPI, 320×240 (LAFVIN mit Touch ≈ MSP2402, Touch ungenutzt), 60 fps mit fbcp-ili9341 |
 | Bedienung | D-Pad, A, B, Start, Select, Ein/Aus-Schiebeschalter (sicheres Herunterfahren), Lautstärkeknopf |
 | Audio | 20-mm-Lautsprecher (PAM8302, 2,5 W) + 3,5-mm-Kopfhörerbuchse mit Lautsprecher-Abschaltung |
 | Akku | LiPo 103450, 2000 mAh, PowerBoost 1000C (Micro-USB-Laden, Spielen beim Laden, Lade-LEDs) |
 | Laufzeit | ca. 2 h typisch (1,5–2,7 h), [Rechnung](documentation/battery-runtime.md) |
-| Gehäuse | 84 × 140 × 28 mm (Original-GBC: 78 × 133,5 × 27,4 mm), Design **„GBX – Game Boy Emulator“**: schwarz mit Fasen, Logo in Chrom-Silber/Lila vorne und hinten ([Vorschau](mechanical/previews/design_front.png), [Rückseite](mechanical/previews/design_back.png)) |
-| Kosten | ca. 120 € ([Stückliste](bom/bill-of-materials.csv)) |
+| Gehäuse | 84 × 140 × 29,3 mm (Original-GBC: 78 × 133,5 × 27,4 mm), Design **„GBX – Game Boy Emulator“**: schwarz mit Fasen, Logo in Chrom-Silber/Lila vorne und hinten ([Vorschau](mechanical/previews/design_front.png), [Rückseite](mechanical/previews/design_back.png)) |
+| Kosten | ca. 130 € ([Stückliste](bom/bill-of-materials.csv)) |
 | Wartung | microSD seitlich, Mini-HDMI + Micro-USB-Daten oben, UART-Konsole (J8), 6 Testpunkte |
 
 ## Projektstruktur
@@ -20,6 +20,9 @@ Tragbarer Retro-Handheld mit eigener Trägerplatine (KiCad 10), 3D-druckbarem Ge
 ```
 GameboyPi/
 ├── README.md                     ← diese Datei
+├── ARCHITECTURE.md               ← wie die Generator-Skripte zusammenhängen (Datenfluss, Build)
+├── CLAUDE.md                     ← Arbeitsregeln für Claude Code
+├── bestellung/                   ← Bestellpaket: Platine (JLCPCB), Bauteile, 3D-Druck (vom Build aktualisiert)
 ├── bom/bill-of-materials.csv     ← Stückliste mit Bezugsquellen und Preisen
 ├── electronics/
 │   ├── kicad-project/            ← KiCad-Projekt + Generator-Skripte (design.py = zentrale Netzliste)
@@ -59,7 +62,7 @@ Benötigt (installiert): KiCad 10.0, OpenSCAD 2021.01, Java 25 (Microsoft OpenJD
 | Entscheidung | Begründung |
 |---|---|
 | **Pi Zero 2 W** kopfüber auf der Platinenrückseite | 4 Kerne (SNES/PS1 flüssig), gleiche Pinbelegung wie Zero/Zero W. Kopfüber wird das Gerät flacher, HDMI/USB zeigen zur Oberkante. |
-| **2,4" ILI9341 SPI (MSP2401)** | Passt in die GBC-Breite. Der Linux-Treiber fbcp-ili9341 ist erprobt (DMA, 60 fps, geringe Latenz). Maße stammen aus der Herstellerzeichnung. Ohne Touch, weil dünner. |
+| **2,4" ILI9341 SPI (LAFVIN ≈ MSP2402)** | Passt in die GBC-Breite. Der Linux-Treiber fbcp-ili9341 ist erprobt (DMA, 60 fps, geringe Latenz). Maße stammen aus der Herstellerzeichnung. Das bestellte Modul hat eine Touch-Folie (ungenutzt), das Gehäuse ist dafür 1,3 mm dicker (`lcd_touch`). |
 | **Adafruit PowerBoost 1000C** statt TP4056 + MT3608 | Geprüftes Modul mit Load-Sharing (laden und spielen), festen 5,2 V (kein Einstell-Poti, das ab Werk 12 V liefern kann), EN-Eingang für die Abschaltlogik, LBO-Signal und Lade-LEDs. |
 | **Soft-Power mit 2 × BS170** | Der Schalter trennt nicht hart. Er fordert das Herunterfahren an, und der Pi schaltet sich danach selbst ab. Schützt die SD-Karte. |
 | **PWM-Audio + PAM8302 + Klinke mit Schaltkontakt** | Ein Audiopfad für beides: Kopfhörer bekommen Line-Pegel, der Lautsprecher bekommt Verstärker und Lautstärkepoti. Ein I2S-Verstärker (v1.0) kann keine Kopfhörer treiben. |
@@ -72,7 +75,7 @@ Benötigt (installiert): KiCad 10.0, OpenSCAD 2021.01, Java 25 (Microsoft OpenJD
 |---|---|
 | Raspberry Pi Zero 2 W (mit Stiftleiste) + 2×20-Buchse + Abstandsbolzen | 22,50 |
 | microSD 32 GB | 7,00 |
-| Display MSP2401 + M3-Abstandshalter | 7,80 |
+| Display LAFVIN 2,4" (Touch) + M3-Abstandshalter | 16,80 |
 | Adafruit PowerBoost 1000C | 22,00 |
 | LiPo 103450 2000 mAh mit Schutz | 10,00 |
 | Adafruit PAM8302 + Lautsprecher 20 mm | 7,00 |
@@ -80,7 +83,7 @@ Benötigt (installiert): KiCad 10.0, OpenSCAD 2021.01, Java 25 (Microsoft OpenJD
 | Taster, Schalter, Klinke, Poti, MOSFETs, Diode, LED, R/C, Stiftleisten | ≈ 7,20 |
 | Leiterplatte (5 Stk. inkl. Versand) | 15,00 |
 | Schrauben, Filament, Kleinmaterial, Acrylscheibe | ≈ 6,90 |
-| **Summe** | **≈ 120 €** |
+| **Summe** | **≈ 130 €** |
 
 ## Benötigtes Werkzeug
 
@@ -109,7 +112,7 @@ Ehrliche Liste dessen, was nur rechnerisch geprüft ist oder auf Annahmen beruht
 4. **PowerBoost-Grenze 1 A:** Die geschätzte Spitzenlast liegt bei ≈ 1 A (Pi-Last + laute Passagen). Mögliche Folge: Spannungseinbrüche unter 5 V, Unterspannungswarnung. Gegenmittel: 8-Ω-Lautsprecher, C1 470 µF, WLAN aus.
 5. **Gehäusemaße teils angenommen:** Display, Pi, PowerBoost, PAM8302 und ADS1115 stammen aus Herstellerdaten. **Nicht verifiziert** sind die Bauhöhen von Poti PTV09A-2 (≈ 11,5 mm angenommen), Klinke SJ1-3525N (5,2 mm), Elkos und Lautsprecher, ebenso die genaue Lage der PowerBoost-LEDs unter dem Lichtleiter. Die Öffnungen sind großzügig, trotzdem zuerst die Frontschale probedrucken.
 6. **Kollisionsprüfung mit Hüllquadern:** Sie prüft vereinfachte Quader gegen die Schalen, keine exakten 3D-Modelle.
-7. **Display-Variante:** Die Werte gelten für das MSP2401. Das MSP2402 (Touch) ist dicker, dann `lcd_spacer`/`lcd_gap` in der `.scad` anpassen. Andere 2,4"-Module (70,5 mm breit) passen nicht.
+7. **Display-Variante:** Das Gehäuse ist auf das LAFVIN-Modul mit Touch-Folie (≈ MSP2402) ausgelegt (`lcd_touch = 1.3` in der `.scad`). Für ein MSP2401 ohne Touch `lcd_touch = 0` setzen und neu bauen. Die Dicke der Touch-Folie ist nur aus dem Produktbild abgeleitet, also vor dem Druck nachmessen. Andere 2,4"-Module (70,5 mm breit) passen nicht.
 8. **PWM-Audio:** Leichtes Rauschen ist typisch. Kopfhörerpegel ist Line-Niveau (≈ −12 dB an 32 Ω), also eher leise. Die Kopfhörer-Lautstärke wird nur per Software geregelt, der Knopf regelt nur den Lautsprecher.
 9. **Autorouting:** Freerouting hat geroutet. Engstellen gibt es zwischen den Pi-Pins mit 0,15 mm (fertigbar ab 0,127 mm). Ein menschlicher Review des Layouts (z. B. PWM-Audio neben SPI-Takt) ist empfehlenswert.
 10. **Wärme:** Der Pi Zero 2 W im geschlossenen Gehäuse kann bei Dauerlast drosseln. Lüftungsschlitze sind vorhanden, eine thermische Simulation fehlt.

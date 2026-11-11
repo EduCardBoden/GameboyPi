@@ -5,7 +5,10 @@ Freerouting kennt keinen Randabstand und hält sich nicht immer an die Kontur. D
   * nach dem Import werden Netze mit Bahnen in der 1-mm-Randzone gelöscht und erneut geroutet,
   * Engstellen unter 0.15 mm (Fertigungsminimum mit Reserve) werden auf 0.15 mm verbreitert.
 """
+import glob
 import os
+import re
+import shutil
 import subprocess
 import sys
 
@@ -19,7 +22,23 @@ PCB = os.path.join(HERE, "GameboyPi.kicad_pcb")
 DSN = os.path.join(HERE, "build", "GameboyPi.dsn")
 SES = os.path.join(HERE, "build", "GameboyPi.ses")
 FR_JAR = os.path.join(HERE, "..", "..", "tools", "freerouting", "freerouting-2.5.0.jar")
-JAVA = r"C:\Program Files\Microsoft\jdk-25.0.4.101-hotspot\bin\java.exe"  # Freerouting 2.5 braucht Java 25
+
+
+def find_java():
+    """Freerouting 2.5 braucht Java >= 25. Reihenfolge: GAMEBOYPI_JAVA, neuestes Microsoft-JDK >= 25, PATH."""
+    if os.environ.get("GAMEBOYPI_JAVA"):
+        return os.environ["GAMEBOYPI_JAVA"]
+    found = []
+    for exe in glob.glob(r"C:\Program Files\Microsoft\jdk-*-hotspot\bin\java.exe"):
+        version = [int(x) for x in re.findall(r"\d+", exe.split("jdk-")[1].split("-")[0])]
+        if version and version[0] >= 25:
+            found.append((version, exe))
+    if found:
+        return max(found)[1]
+    return shutil.which("java") or sys.exit("Java 25+ nicht gefunden (Umgebungsvariable GAMEBOYPI_JAVA setzen)")
+
+
+JAVA = find_java()
 EDGE_MARGIN = 1.0
 MIN_TRACK = 0.15
 os.makedirs(os.path.dirname(DSN), exist_ok=True)

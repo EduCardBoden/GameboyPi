@@ -22,3 +22,5 @@ for chunk in re.split(r"\(net\s*\(code", text[text.index("(nets"):])[1:]:
 want = {(p["ref"], pin, net) for p in PARTS for pin, net in p["pins"].items()}
 print("fehlend im Schaltplan:", sorted(want - got) or "keine")
 print("zusätzlich im Schaltplan:", sorted(got - want) or "keine")
+if want != got:  # build.ps1 bricht über den Exit-Code ab
+    sys.exit("Netzliste weicht von design.py ab")

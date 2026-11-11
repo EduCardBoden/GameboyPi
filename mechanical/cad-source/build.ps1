@@ -52,4 +52,7 @@ foreach ($p in "front", "front_logo_silver", "front_logo_purple", "back", "back_
 # Farbvorschau im GBX-Design (Vorschau-Modus, damit die Farben sichtbar bleiben)
 & $o -o "$prev\design_front.png" -D "part=\`"showcase\`"" --imgsize=900,1200 --camera=42,70,0,180,0,180,320 --colorscheme=Tomorrow $scad 2>&1 | Out-Null
 & $o -o "$prev\design_back.png" -D "part=\`"showcase_back\`"" --imgsize=900,1200 --camera=42,70,28,0,0,0,320 --colorscheme=Tomorrow $scad 2>&1 | Out-Null
+# 4) Bestellpaket (bestellung\3_3d_druck) aktuell halten
+$order = Resolve-Path "..\..\bestellung\3_3d_druck"
+Copy-Item "$stl\*.stl", "$prev\design_front.png", "$prev\design_back.png" $order -Force
 Write-Host "fertig."

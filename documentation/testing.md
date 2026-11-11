@@ -10,7 +10,7 @@ Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` u
 | Elektrische Regeln (ERC), alle Schweregrade | `kicad-cli sch erc --severity-all` | **0 Fehler, 0 Warnungen** |
 | Schaltplan ↔ Platine (Parität) | `kicad-cli pcb drc --schematic-parity` | **0 Abweichungen** |
 | Ungeroutete Verbindungen | DRC | **0** |
-| Design-Regeln (DRC): Abstände, Bohrungen, Randabstand 0,5 mm (Leiterbahnen ≥ 1 mm), Leiterbahnbreite ≥ 0,15 mm | `kicad-cli pcb drc --severity-all` | **0 Fehler**, 102 Warnungen (siehe unten) |
+| Design-Regeln (DRC): Abstände, Bohrungen, Randabstand 0,5 mm (Leiterbahnen ≥ 1 mm), Leiterbahnbreite ≥ 0,15 mm | `kicad-cli pcb drc --severity-all` | **0 Fehler**, 105 Warnungen (siehe unten) |
 | Fertigbarkeit | Regeln: min. Bahn 0,15 mm, min. Abstand 0,2 mm, Via 0,6/0,3 mm, Bohrung ≥ 0,7 mm | innerhalb der Standardregeln von JLCPCB/PCBWay (0,127 mm / 0,127 mm / 0,45/0,2 mm) |
 | Bauteilorientierung | Abgleich der Pad-1-Positionen mit den Original-CAD-Daten der Module (Adafruit Eagle-Dateien, lcdwiki-Maßzeichnung), Ausgabe von `make_pcb.py` | PowerBoost Pin 1 (USB) unten, PAM8302 Pin 1 (GND) links, ADS1115 Pin 1 unten, Display Pin 1 (VCC) oben, Pi Pin 1 rechts (Rückseite gespiegelt) – wie vorgesehen |
 | Mechanik: Kollision Bauteile ↔ Gehäuse | OpenSCAD, 21 Hüllkörper (Platine, Display, Pi, Akku, Module, Taster, Klinke, Poti, Elkos, Lautsprecher) gegen beide Schalen | **0 Kollisionen** (`mechanical/cad-source/build/collision_report.txt`). Im ersten Lauf gefunden und behoben: Pi-Ecke nur 0,16 mm vom Schraubpfosten → Pfosten auf Ø5,5 verkleinert (0,41 mm) |
@@ -21,8 +21,8 @@ Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` u
 
 | Anzahl | Art | Begründung |
 |---|---|---|
-| 63 | `silk_overlap` | Referenztexte überlappen sich (dicht bestückte Bereiche). Nur kosmetisch. |
-| 28 | `silk_over_copper` | Bestückungsdruck reicht an Pads heran. Der Hersteller entfernt Druck auf Pads automatisch. |
+| 65 | `silk_overlap` | Referenztexte überlappen sich (dicht bestückte Bereiche). Nur kosmetisch. |
+| 29 | `silk_over_copper` | Bestückungsdruck reicht an Pads heran. Der Hersteller entfernt Druck auf Pads automatisch. |
 | 8 | `silk_edge_clearance` | Bauteilumrisse von Schalter, Klinke und Poti ragen absichtlich über den Platinenrand. |
 | 3 | `starved_thermal` | GND-Pads mit nur einem Thermal-Steg. Diese Pads sind zusätzlich über geroutete GND-Leiterbahnen angebunden. |
 

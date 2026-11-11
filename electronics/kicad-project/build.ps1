@@ -16,6 +16,10 @@ Run $py @("route.py", "60")
 # Pruefungen (Berichte in build\, Zusammenfassung in documentation\testing.md)
 & $cli sch erc --severity-all -o build\erc.rpt GameboyPi.kicad_sch
 & $cli pcb drc --schematic-parity --severity-all -o build\drc.rpt GameboyPi.kicad_pcb
+foreach ($r in "build\erc.rpt", "build\drc.rpt") {
+    Select-String -Path $r -Pattern "ERC messages|Found \d+ (DRC violations|unconnected)" | ForEach-Object { Write-Host "$r : $($_.Line.Trim(' *'))" }
+}
+if (Select-String -Path build\drc.rpt -Pattern "; error" -Quiet) { Write-Warning "DRC meldet Fehler (nicht nur Warnungen) - build\drc.rpt lesen" }
 
 # Fertigungsdaten: Gerber + Bohrdaten (JLCPCB/PCBWay/Aisler)
 $g = "$el\gerber"
@@ -23,6 +27,7 @@ Get-ChildItem $g -File -ErrorAction SilentlyContinue | Remove-Item
 Run $cli @("pcb", "export", "gerbers", "--layers", "F.Cu,B.Cu,F.Paste,B.Paste,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts", "-o", "$g\", "GameboyPi.kicad_pcb")
 Run $cli @("pcb", "export", "drill", "--format", "excellon", "--excellon-separate-th", "--generate-map", "--map-format", "pdf", "-o", "$g\", "GameboyPi.kicad_pcb")
 Compress-Archive -Path "$g\*.g*", "$g\*.drl" -DestinationPath "$g\GameboyPi_Gerber.zip" -Force
+Copy-Item "$g\GameboyPi_Gerber.zip" "$el\..\bestellung\1_platine_JLCPCB\" -Force  # Bestellpaket aktuell halten
 
 # Montage: Pick-and-Place (beide Seiten), BOM aus dem Schaltplan, Bestueckungsplaene
 $a = "$el\assembly"
