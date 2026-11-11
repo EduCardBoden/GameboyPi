@@ -4,7 +4,8 @@
 #
 # Erfahrungen (11.11.2026):
 # - Word hängt unsichtbar, wenn es die Datei direkt in Dokumente öffnet -> Arbeitskopie in %TEMP%.
-# - Save() hängt im Kompatibilitätsmodus (python-docx-Vorlage) -> SaveAs2 mit CompatibilityMode 15.
+# - Save() hängt im Kompatibilitätsmodus -> SaveAs2. Den Modus selbst setzt make_report.py (15);
+#   SaveAs2(CompatibilityMode=15) stellt ihn NICHT um.
 # - foreach über $d.TablesOfContents schlägt fehl -> Item(i).
 # - Ein Watchdog beendet die eigene Word-Instanz nach 120 s, damit nichts hängen bleibt.
 $ErrorActionPreference = "Stop"

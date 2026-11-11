@@ -665,6 +665,13 @@ srcs = [
 for s in srcs:
     p = doc.add_paragraph(style="List Number 2"); r = p.add_run(s); r.font.size = Pt(9); p.paragraph_format.space_after = Pt(2)
 
-os.makedirs(OUT_DIR, exist_ok=True)
+# Word-2013+-Modus statt Kompatibilitätsmodus 14 der python-docx-Vorlage
+# (Word.SaveAs2 mit CompatibilityMode=15 stellt das nicht um, getestet 11.11.2026)
+for cs in doc.settings.element.iter(qn("w:compatSetting")):
+    if cs.get(qn("w:name")) == "compatibilityMode":
+        cs.set(qn("w:val"), "15")
+
+OUT = os.environ.get("GB_REPORT_OUT", OUT)   # z. B. Testlauf, solange der Bericht in Word offen ist
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 doc.save(OUT)
 print("gespeichert:", OUT, "| Abbildungen:", fig_no[0], "| Tabellen:", tab_no[0])
