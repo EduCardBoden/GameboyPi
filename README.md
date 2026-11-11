@@ -1,4 +1,4 @@
-# GameboyPi v1.1 – Raspberry-Pi-Zero-Handheld im Game-Boy-Color-Stil
+# GameboyPi v1.2 – Raspberry-Pi-Zero-Handheld im Game-Boy-Color-Stil
 
 Tragbarer Retro-Handheld mit eigener Trägerplatine (KiCad 10), 3D-druckbarem Gehäuse (OpenSCAD) und LiPo-Akku.
 **Status: Design fertig und rechnerisch geprüft, aber noch nicht gebaut.** Siehe [Prüfstatus](documentation/testing.md) und [offene Risiken](#offene-technische-risiken).
@@ -107,9 +107,9 @@ Temperaturgeregelter Lötkolben + Zinn + Flussmittel, Seitenschneider, Abisolier
 Ehrliche Liste dessen, was nur rechnerisch geprüft ist oder auf Annahmen beruht. **Vor der Bestellung von 5 Platinen lesen.**
 
 1. **Nicht physisch gebaut oder gemessen.** ERC, DRC, Netzlistenvergleich und die Kollisionsprüfung im CAD sind bestanden. Es gab aber keinen Probedruck, keine Messung und keine Schaltungssimulation (SPICE) der Abschaltlogik.
-2. **Soft-Power:** Die Gate-Schwelle des BS170 liegt bei max. 3,0 V. Q1 bekommt sein Gate von VBAT (3,2–4,2 V). Bei fast leerem Akku schaltet Q1 nur knapp durch. Der EN-Eingang braucht laut Adafruit nur einen Pegel nahe GND bei kleinem Strom, das sollte reichen. Wert des internen EN-Pull-ups ist nicht dokumentiert. **Im Messplan prüfen.**
+2. **Soft-Power (v1.2 rechnerisch geklärt):** Die BS170-Schwelle (max. 3,0 V) ist bei **1 mA** Drainstrom spezifiziert (onsemi). Der EN-Pull-up im PowerBoost ist laut Adafruit-Schaltplan **R13 = 200 kΩ an VBAT**, Q1 muss also nur ≈ 21 µA ziehen, ~50× weniger als der Spezifikationsstrom. EN schaltet bei < 0,2 × VBAT ab (TI TPS61090). Restrisiko nur noch im Messplan (Punkt 2.2).
 3. **gpio-poweroff:** Das Overlay ist für eine solche Abschaltung gedacht. Das Verhalten hängt aber von der Kernel-Version ab (RetroPie 4.8 / Buster). Falls GPIO4 nach dem Herunterfahren nicht low geht, kann ein systemd-Skript in `/lib/systemd/system-shutdown/` das übernehmen.
-4. **PowerBoost-Grenze 1 A:** Die geschätzte Spitzenlast liegt bei ≈ 1 A (Pi-Last + laute Passagen). Mögliche Folge: Spannungseinbrüche unter 5 V, Unterspannungswarnung. Gegenmittel: 8-Ω-Lautsprecher, C1 470 µF, WLAN aus.
+4. **PowerBoost-Grenze 1 A:** Geschätzte Spitzenlast ≈ 1 A (Pi-Last + laute Passagen). Seit v1.2 begrenzen R6/R7 = 47 kΩ die Lautsprecherleistung auf ≤ 0,5 W, damit sinkt der Audio-Spitzenstrom von ≈ 330 mA auf ≈ 120 mA (bei 5 V, 85 % Wirkungsgrad). Weitere Gegenmittel: C1 470 µF, WLAN aus.
 5. **Gehäusemaße teils angenommen:** Display, Pi, PowerBoost, PAM8302 und ADS1115 stammen aus Herstellerdaten. **Nicht verifiziert** sind die Bauhöhen von Poti PTV09A-2 (≈ 11,5 mm angenommen), Klinke SJ1-3525N (5,2 mm), Elkos und Lautsprecher, ebenso die genaue Lage der PowerBoost-LEDs unter dem Lichtleiter. Die Öffnungen sind großzügig, trotzdem zuerst die Frontschale probedrucken.
 6. **Kollisionsprüfung mit Hüllquadern:** Sie prüft vereinfachte Quader gegen die Schalen, keine exakten 3D-Modelle.
 7. **Display-Variante:** Das Gehäuse ist auf das LAFVIN-Modul mit Touch-Folie (≈ MSP2402) ausgelegt (`lcd_touch = 1.3` in der `.scad`). Für ein MSP2401 ohne Touch `lcd_touch = 0` setzen und neu bauen. Die Dicke der Touch-Folie ist nur aus dem Produktbild abgeleitet, also vor dem Druck nachmessen. Andere 2,4"-Module (70,5 mm breit) passen nicht.
@@ -120,6 +120,8 @@ Ehrliche Liste dessen, was nur rechnerisch geprüft ist oder auf Annahmen beruht
 12. **Software-Stack:** RetroPie 4.8 basiert auf Debian Buster (nicht mehr gepflegt). fbcp-ili9341 braucht diesen Legacy-Grafikstack. Die Bookworm-Alternative (mipi-dbi-spi) ist dokumentiert, aber langsamer.
 13. **Akku-Steckerpolarität:** JST-PH-Akkus gibt es mit vertauschter Belegung. Vor dem Einstecken messen.
 14. **Bestückungsdruck:** ca. 100 kosmetische Warnungen (Text auf Pads/Kante). Der Hersteller beschneidet sie, keine Funktion betroffen.
+15. **Lieferlage Pi Zero 2 W (Stand 11.11.2026):** Bei BerryBase.at nicht lieferbar, bei Reichelt widersprüchliche Angaben (ein Artikel nennt „lieferbar“, die Shop-Suche „ab 22.12.2026“). Der Pi Zero W (langsamer) passt mechanisch und elektrisch. Details: `documentation/PURCHASING_COMPARISON.md`.
+16. **ADS1115-Version:** Die Platine erwartet die Pinbelegung der **STEMMA-QT-Version** von Adafruit #1085. Ältere Lagerware (eine 10-polige Leiste) passt nicht. Vor dem Löten das Modul mit `wiring.md` vergleichen.
 
 ## Rechtliches
 

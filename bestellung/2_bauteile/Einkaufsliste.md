@@ -26,7 +26,7 @@ Ist ein Teil nicht lagernd, schlägt der Shop Alternativen vor. Achte dabei auf 
 | Lautsprecher 20 mm, 8 Ω | PUI Audio AS02008MR-5-R | 1 | 3 |
 | Buchsenleiste 2 × 20, 8,5 mm hoch (für den Pi) | Sullins PPTC202LFBN-RC | 1 | 2 |
 | Stiftleiste 1 × 3 (UART) | Sullins PRPC003SAAN-RC | 1 | 0,30 |
-| Widerstände 0,25 W (1k, 270R, 150R, 10k, 1M, 100k) | Yageo MFR-25FBF52-… | siehe CSV | 2 |
+| Widerstände 0,25 W (1k, 270R, 150R, 47k, 1M, 100k) | Yageo MFR-25FBF52-… | siehe CSV | 2 |
 | Keramikkondensatoren 33 nF / 100 nF, RM 2,5 | Vishay K333K15X7RF5TL2 / K104K15X7RF5TL2 | 3 / 2 | 1 |
 | **Zwischensumme** | | | **≈ 54 €** + Versand (ab ca. 50 € oft gratis) |
 

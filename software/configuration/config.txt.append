@@ -1,4 +1,4 @@
-# ===== GameboyPi v1.1 – an /boot/config.txt ANHÄNGEN (RetroPie 4.8, Pi Zero 2 W) =====
+# ===== GameboyPi v1.2 – an /boot/config.txt ANHÄNGEN (RetroPie 4.8, Pi Zero 2 W) =====
 
 # --- Display: fbcp-ili9341 spiegelt den HDMI-Framebuffer auf das SPI-Display ---
 # KEIN dtparam=spi=on (fbcp-ili9341 steuert SPI0 direkt)
@@ -27,6 +27,11 @@ dtoverlay=gpio-key,gpio=23,keycode=45,label="A"
 dtoverlay=gpio-key,gpio=22,keycode=44,label="B"
 dtoverlay=gpio-key,gpio=17,keycode=28,label="START"
 dtoverlay=gpio-key,gpio=27,keycode=54,label="SELECT"
+
+# --- Akku leer (PowerBoost LBO über BAT85 an GPIO20) ---
+# Eingang OHNE internen Pull (Standard wäre Pull-down): R10 (100k) zieht hoch. Der LBO-Ausgang
+# des TPS61090 darf laut Datenblatt nur 100 uA ziehen (v1.2).
+gpio=20=ip,pn
 
 # --- Sicheres Ausschalten ---
 # Schalter auf AUS -> GPIO16 low -> Linux fährt herunter

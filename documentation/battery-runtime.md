@@ -39,7 +39,7 @@ Rechnung: Laufzeit = 6,7 Wh / Last am Akku.
 |---|---|---|
 | max. Entladestrom Akku | ≈ 1,8 A (1 A × 5,2 V / 3,4 V / 0,85) | Zelle mit Schutzschaltung, typisch 1–2 C zulässig (2–4 A) ✔ |
 | Tiefentlade-/Kurzschluss-/Überstromschutz | Schutzschaltung (PCM) im Akku + Abschaltung über LBO + Software | ✔ |
-| 5-V-Leiterbahnen | 1,0 mm, 35 µm Cu | ca. 2,5 A bei 10 K Erwärmung (IPC-2221) ✔ |
+| 5-V-Leiterbahnen | 0,75–1,0 mm, 35 µm Cu (gemessen im Layout v1.2) | 1,9 A (0,75 mm) bzw. 2,4 A (1,0 mm) bei 10 K Erwärmung (IPC-2221, Außenlage) ✔ ≥ 1,9 × Spitzenlast |
 | Header-Pin 5 V (PowerBoost → Platine) | 1 Pin, 2,54 mm | ≈ 3 A Nennstrom ✔ |
 | Akkuleitung | vorkonfektioniert, ≥ 0,2 mm² (AWG 24) | ✔ für 1,8 A bei 5 cm Länge |
 | Lautsprecherleitung | 0,14 mm² | ✔ |

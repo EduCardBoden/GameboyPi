@@ -1,6 +1,6 @@
 # GameboyPi – instructions for Claude
 
-DIY Game-Boy-Color-style handheld (Pi Zero 2 W). Design is complete and checked by calculation, but **not physically built yet**. Docs are German; keep them German.
+DIY Game-Boy-Color-style handheld (Pi Zero 2 W). Design is complete and checked by calculation, but **not physically built yet**. Docs are German; keep them German. Engineering log and decisions: `documentation/project-log/`.
 Overview: [README.md](README.md) · How the generators fit together: [ARCHITECTURE.md](ARCHITECTURE.md) · Open risks: README "Offene technische Risiken"
 
 ## Golden rules
@@ -25,11 +25,14 @@ Overview: [README.md](README.md) · How the generators fit together: [ARCHITECTU
 | PCB only | `powershell -ExecutionPolicy Bypass -File electronics/kicad-project/build.ps1` | ~3 min |
 | Case: collision check + STL + previews | `powershell -ExecutionPolicy Bypass -File mechanical/cad-source/build.ps1` | ~25 min |
 | STL only | add `-SkipCheck` | ~5 min |
+| Consistency design.py ↔ .scad ↔ Pi config (seconds) | `python tools/check_consistency.py` (any Python 3) | seconds |
+| Software unit tests | `python -m pytest software/tests -q` | seconds |
+| STL check (closed shells, mass) | `python tools/stl_report.py` | ~10 s |
 | Quick netlist check (no layout change) | `& "$env:LOCALAPPDATA\Programs\KiCad\10.0\bin\python.exe" electronics/kicad-project/check_netlist.py` | seconds |
 
 The PCB build **re-routes the board** with Freerouting. The result differs every run and rewrites tracked files. Run it only when the electronics changed, then check `build/drc.rpt` (0 errors, 0 unconnected) and compare the warning counts with `testing.md`.
 
-Expected results: ERC 0/0, DRC 0 errors (≈105 cosmetic silk warnings), 0 unconnected pads, netlist check "keine/keine", collision report "0 Kollision(en)".
+Expected results: ERC 0/0, DRC 0 errors (≈101 cosmetic silk/thermal warnings), 0 unconnected pads, netlist check "keine/keine", collision report "0 Kollision(en)".
 
 ## Toolchain (hard-coded paths)
 

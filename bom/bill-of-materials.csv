@@ -20,9 +20,9 @@ Pos;Referenz;Menge;Bauteil;Wert/Typ;Footprint/Form;Bezugsquelle (Beispiel);Preis
 19;R1;1;Widerstand;1 kOhm;Axial 0207;Reichelt;0.05;0.05;
 20;R2,R4;2;Widerstand;270 Ohm;Axial 0207;Reichelt;0.05;0.10;
 21;R3,R5;2;Widerstand;150 Ohm;Axial 0207;Reichelt;0.05;0.10;
-22;R6,R7,R10;3;Widerstand;10 kOhm;Axial 0207;Reichelt;0.05;0.15;
+22;R6,R7;2;Widerstand;47 kOhm (v1.2, begrenzt Lautsprecherleistung);Axial 0207;Reichelt;0.05;0.10;
 23;R8;1;Widerstand;1 MOhm;Axial 0207;Reichelt;0.05;0.05;
-24;R9,R11,R12;3;Widerstand;100 kOhm;Axial 0207;Reichelt;0.05;0.15;
+24;R9,R10,R11,R12;4;Widerstand;100 kOhm (R10 seit v1.2);Axial 0207;Reichelt;0.05;0.20;
 25;C2,C4;2;Keramikkondensator;33 nF;Scheibe 2,5 mm RM;Reichelt;0.10;0.20;
 26;C6;1;Keramikkondensator;100 nF;Scheibe 2,5 mm RM;Reichelt;0.10;0.10;
 27;C3,C5;2;Elko;Panasonic ECE-A1AKS101 100 uF 10 V, D6,3 x 6 mm;CP_Radial_D6.3mm_P2.50mm;DigiKey P963-ND;0.32;0.64;niedrige Bauform noetig (Front-Hohlraum 8,8 mm)
@@ -30,7 +30,7 @@ Pos;Referenz;Menge;Bauteil;Wert/Typ;Footprint/Form;Bezugsquelle (Beispiel);Preis
 29;J8;1;Stiftleiste;1x3, 2,54 mm (UART);THT;Reichelt;0.10;0.10;
 30;TP1-TP6;6;Testpunkt;Loetpad 1,5 mm;-;-;0.00;0.00;auf der Platine
 31;-;4;Gehaeuseschrauben;M2,5 x 20 (Zylinder- oder Senkkopf);-;Reichelt;0.10;0.40;schneiden ins 2,2-mm-Loch
-32;PCB;1;Leiterplatte GameboyPi v1.1;2 Lagen, 1,6 mm, 78 x 134 mm, HASL;-;JLCPCB / PCBWay / Aisler;3.00;15.00;Mindestmenge 5 Stk., inkl. Versand ca. 15 EUR
+32;PCB;1;Leiterplatte GameboyPi v1.2;2 Lagen, 1,6 mm, 78 x 134 mm, HASL;-;JLCPCB / PCBWay / Aisler;3.00;15.00;Mindestmenge 5 Stk., inkl. Versand ca. 15 EUR
 33;-;1;Filament;PLA matt schwarz ca. 65 g + Silk-PLA silber und lila je ca. 5 g;-;-;1.50;1.50;GBX-Design: Gehaeuse schwarz, GB/Slogans silber, X/Linie/A-B-Tasten lila
 34;-;1;Kleinmaterial;Kapton, Moosgummi 0,5 mm, doppels. Klebeband, Litze 0,14 mm2;-;-;3.00;3.00;
 35;-;1;optional Displayscheibe;Acryl 62 x 46 x 1 mm;-;Zuschnitt;2.00;2.00;

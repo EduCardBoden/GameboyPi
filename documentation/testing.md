@@ -1,6 +1,6 @@
 # Prüfungen und Inbetriebnahme
 
-## A) Durchgeführte Prüfungen (rechnerisch, am 2026-10-20)
+## A) Durchgeführte Prüfungen (rechnerisch, zuletzt am 2026-11-11, Stand v1.2)
 
 Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` und `mechanical/cad-source/build.ps1`. Die Rohberichte liegen in `electronics/kicad-project/build/` bzw. `mechanical/cad-source/build/`.
 
@@ -10,11 +10,15 @@ Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` u
 | Elektrische Regeln (ERC), alle Schweregrade | `kicad-cli sch erc --severity-all` | **0 Fehler, 0 Warnungen** |
 | Schaltplan ↔ Platine (Parität) | `kicad-cli pcb drc --schematic-parity` | **0 Abweichungen** |
 | Ungeroutete Verbindungen | DRC | **0** |
-| Design-Regeln (DRC): Abstände, Bohrungen, Randabstand 0,5 mm (Leiterbahnen ≥ 1 mm), Leiterbahnbreite ≥ 0,15 mm | `kicad-cli pcb drc --severity-all` | **0 Fehler**, 105 Warnungen (siehe unten) |
+| Design-Regeln (DRC): Abstände, Bohrungen, Randabstand 0,5 mm (Leiterbahnen ≥ 1 mm), Leiterbahnbreite ≥ 0,15 mm | `kicad-cli pcb drc --severity-all` | **0 Fehler**, 101 Warnungen (siehe unten) |
 | Fertigbarkeit | Regeln: min. Bahn 0,15 mm, min. Abstand 0,2 mm, Via 0,6/0,3 mm, Bohrung ≥ 0,7 mm | innerhalb der Standardregeln von JLCPCB/PCBWay (0,127 mm / 0,127 mm / 0,45/0,2 mm) |
 | Bauteilorientierung | Abgleich der Pad-1-Positionen mit den Original-CAD-Daten der Module (Adafruit Eagle-Dateien, lcdwiki-Maßzeichnung), Ausgabe von `make_pcb.py` | PowerBoost Pin 1 (USB) unten, PAM8302 Pin 1 (GND) links, ADS1115 Pin 1 unten, Display Pin 1 (VCC) oben, Pi Pin 1 rechts (Rückseite gespiegelt) – wie vorgesehen |
 | Mechanik: Kollision Bauteile ↔ Gehäuse | OpenSCAD, 21 Hüllkörper (Platine, Display, Pi, Akku, Module, Taster, Klinke, Poti, Elkos, Lautsprecher) gegen beide Schalen | **0 Kollisionen** (`mechanical/cad-source/build/collision_report.txt`). Im ersten Lauf gefunden und behoben: Pi-Ecke nur 0,16 mm vom Schraubpfosten → Pfosten auf Ø5,5 verkleinert (0,41 mm) |
 | STL-Geometrie | OpenSCAD/CGAL | alle 10 Teile exportiert. Schalen, D-Pad und Knopf sind je ein geschlossener Körper, A/B und Start/Select je 2. Logo-Einlagen bestehen aus mehreren Buchstaben-Körpern. |
+| Konsistenz design.py ↔ Gehäuse ↔ Pi-Software (v1.2) | `tools/check_consistency.py` (36 Prüfungen: Löcher, Tasten, LED, Klinke, Poti, Schalter, Display, alle GPIOs in config.txt/install.sh/battery_monitor.py) | **0 Abweichungen**. Mutationstest: 3 absichtlich eingebaute Fehler wurden alle gemeldet |
+| STL-Geometrie (v1.2) | `tools/stl_report.py` (Kantenzählung, Volumen) | alle 11 STLs geschlossen (0 offene Kanten), 85 g PLA bei Vollmaterial |
+| Akku-Software (v1.2) | `pytest software/tests` (7 Tests: Teilerfaktor, Rohwert→Spannung, Kennlinie, LBO-Entprellung, Unterspannungs-Verzögerung, ADC-Ausfall) | **7/7 bestanden** |
+| Shell-Syntax `install.sh` | `bash -n` | ok (shellcheck nicht installiert) |
 | Logo-Lesbarkeit | Renderings `previews/design_front.png`, `design_back.png` | Vorderseite von vorne, Rückseite von hinten lesbar (nicht gespiegelt). Einlagen liegen deckungsgleich in den 0,6-mm-Vertiefungen. |
 
 ### Verbleibende DRC-Warnungen (bewusst akzeptiert)
@@ -22,9 +26,9 @@ Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` u
 | Anzahl | Art | Begründung |
 |---|---|---|
 | 65 | `silk_overlap` | Referenztexte überlappen sich (dicht bestückte Bereiche). Nur kosmetisch. |
-| 29 | `silk_over_copper` | Bestückungsdruck reicht an Pads heran. Der Hersteller entfernt Druck auf Pads automatisch. |
+| 26 | `silk_over_copper` | Bestückungsdruck reicht an Pads heran. Der Hersteller entfernt Druck auf Pads automatisch. |
 | 8 | `silk_edge_clearance` | Bauteilumrisse von Schalter, Klinke und Poti ragen absichtlich über den Platinenrand. |
-| 3 | `starved_thermal` | GND-Pads mit nur einem Thermal-Steg. Diese Pads sind zusätzlich über geroutete GND-Leiterbahnen angebunden. |
+| 2 | `starved_thermal` | GND-Pads mit nur einem Thermal-Steg. Diese Pads sind zusätzlich über geroutete GND-Leiterbahnen angebunden. |
 
 Bewusst deaktivierte Regeln (in `GameboyPi.kicad_pro` mit Begründung in `make_pcb.py`):
 - `pth_inside_courtyard` / `npth_inside_courtyard`: Lötpins des Schalters und die Mutter des Display-Abstandshalters liegen unter dem Pi, der 11 mm höher sitzt.
@@ -34,7 +38,7 @@ Bewusst deaktivierte Regeln (in `GameboyPi.kicad_pro` mit Begründung in `make_p
 
 - **Kein realer Aufbau, keine Messung, kein Probedruck.** Es gibt keine Hardware.
 - **Keine Schaltungssimulation** (SPICE) der Abschaltlogik und des Audio-Filters. Für PowerBoost, PAM8302 und ADS1115 gibt es keine öffentlichen SPICE-Modelle. Die Logik ist im Abschnitt „Abschaltlogik“ in `wiring.md` als Wahrheitstabelle dokumentiert.
-- **Keine Software-Tests auf echter Hardware.** `battery_monitor.py` ist nur syntaktisch geprüft (`py_compile`), die Overlays nur gegen die Dokumentation.
+- **Keine Software-Tests auf echter Hardware.** Die Rechenlogik von `battery_monitor.py` ist mit Unit-Tests geprüft (ohne Pi), die Overlays nur gegen die Dokumentation und per `check_consistency.py` gegen die Platine.
 - **Keine thermische Analyse.**
 
 ## B) Inbetriebnahme-Messplan (nach dem Löten)
@@ -74,9 +78,10 @@ Benötigt: Multimeter. Ideal ist ein Labornetzteil mit Strombegrenzung (3,7 V, 3
 |---|---|---|
 | 4.1 | Booten, `vcgencmd get_throttled` | `0x0` (keine Unterspannung) |
 | 4.2 | `i2cdetect -y 1` | Gerät an Adresse `48` |
-| 4.3 | `cat /dev/shm/battery` | Spannung ±0,05 V zur Multimetermessung an TP1 |
+| 4.3 | `cat /dev/shm/battery` | Spannung ±0,05 V zur Multimetermessung an TP1. Sonst `VBAT_CAL` in `/opt/gameboypi/battery_monitor.py` = Multimeter / Anzeige setzen |
 | 4.4 | `evtest`: jede Taste drücken | passende Keycodes laut `setup-guide.md` |
-| 4.5 | Ton über Lautsprecher, Lautstärkeknopf drehen | Lautstärke ändert sich |
+| 4.5 | Ton über Lautsprecher, Lautstärkeknopf drehen | Lautstärke ändert sich. Bei Vollausschlag (1-kHz-Ton, Software 100 %) AC-Spannung am Lautsprecher ≤ 2,0 V eff. (= 0,5 W an 8 Ω). Falls zu leise: Trimmpoti auf dem PAM8302 prüfen |
+| 4.5b | J10 Pin 6 (LBO) mit 3,0 V Labornetzteil statt Akku | GPIO20 liest 0, nach 15 s fährt der Pi herunter (LBO entprellt) |
 | 4.6 | Kopfhörer einstecken | Lautsprecher verstummt, Stereo im Kopfhörer |
 | 4.7 | Schalter AUS | Pi fährt herunter, ca. 5–15 s später TP2 = 0 V, Power-LED aus |
 | 4.8 | Gerät 30 min unter Last (Spiel) | Temperatur `vcgencmd measure_temp` < 80 °C, keine Drosselung |

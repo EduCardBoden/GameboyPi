@@ -16,7 +16,7 @@ Fast alles läuft über die Trägerplatine. Lose Kabel gibt es nur zwei: den **A
                           │          └── Q2 (BS170) ◄── GPIO4 „PWR_KEEP“ (gpio-poweroff)
                           │  SW9 Stellung AUS → GPIO16 „PWR_SW_SENSE“ (gpio-shutdown)
 
- Pi +3V3 ──► Display LED (Hintergrundlicht), ADS1115 VCC, R10 (LBO-Pull-up)
+ Pi +3V3 ──► Display LED (Hintergrundlicht), ADS1115 VCC, R10 100k (LBO-Pull-up)
 ```
 
 ### Abschaltlogik
@@ -81,8 +81,8 @@ Konfliktprüfung: SPI0, I2C1, UART0, PWM0/1 und die Tasten belegen disjunkte Pin
 ```
 GPIO12 ─270Ω─┬─150Ω─GND          GPIO13 analog ─► AUD_R_F ─► C5 ─► HP_R
              └─33nF─GND
-          AUD_L_F ─(+)C3 100µF─► HP_L ─► Klinke T ──(Schaltkontakt TN)──► SPK_L ─10k─┐
+          AUD_L_F ─(+)C3 100µF─► HP_L ─► Klinke T ──(Schaltkontakt TN)──► SPK_L ─47k─┐
                                                                                     ├─ SPK_MIX ─► RV1 10k log ─► AMP_IN ─► PAM8302 A+ (A− = GND) ─► Lautsprecher
-                                         HP_R ─► Klinke R ──(Schaltkontakt RN)──► SPK_R ─10k─┘
+                                         HP_R ─► Klinke R ──(Schaltkontakt RN)──► SPK_R ─47k─┘
 ```
 Ohne Stecker verbinden die Schaltkontakte TN/RN Spitze und Ring mit dem Lautsprecherpfad. Mit eingestecktem Kopfhörer sind sie offen, der Lautsprecher ist stumm.

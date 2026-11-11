@@ -200,7 +200,7 @@ for i, n in enumerate(notes):
 with open(OUT, "w", encoding="utf-8", newline="\n") as f:
     f.write('(kicad_sch (version 20250610) (generator "eeschema") (generator_version "10.0")\n')
     f.write('\t(uuid "%s")\n\t(paper "A3")\n' % ROOT_UUID)
-    f.write('\t(title_block (title "GameboyPi") (date "2026-10-20") (rev "1.1") (comment 1 "Raspberry Pi Zero 2 W Handheld"))\n')
+    f.write('\t(title_block (title "GameboyPi") (date "2026-11-11") (rev "1.2") (comment 1 "Raspberry Pi Zero 2 W Handheld"))\n')
     f.write("\t(lib_symbols\n")
     for b in lib_bodies.values():
         f.write("\t\t" + b.strip() + "\n")

@@ -48,7 +48,7 @@ Hotkey (RetroArch, Standard bei Tastatur-Konfiguration): **SELECT + START** been
 ## Audio und Lautstärke
 
 - PWM-Stereo über `dtoverlay=audremap,pins_12_13` (GPIO12 = links, GPIO13 = rechts).
-- **Lautsprecher:** Hardware-Lautstärke über den Drehknopf links (Poti RV1 vor dem PAM8302).
+- **Lautsprecher:** Hardware-Lautstärke über den Drehknopf links (Poti RV1 vor dem PAM8302). Seit v1.2 begrenzen R6/R7 (47 kΩ) die Leistung auf ≤ 0,5 W, damit der 0,5-W-Lautsprecher bei Vollausschlag nicht überlastet wird. Das Trimmpoti auf dem PAM8302-Modul bleibt auf Rechtsanschlag (Werkseinstellung) und dient nur zur Feinabstimmung nach unten.
 - **Kopfhörer:** Beim Einstecken trennt die Buchse den Lautsprecher automatisch. Die Kopfhörer-Lautstärke lässt sich in EmulationStation unter *Sound Settings → System Volume* einstellen, oder mit `amixer set PCM 80%`.
 - Ausgabegerät in RetroPie auf „Headphones/Analog“ stellen: `sudo raspi-config` → System → Audio.
 
@@ -56,7 +56,9 @@ Hotkey (RetroArch, Standard bei Tastatur-Konfiguration): **SELECT + START** been
 
 - Die Lade-LEDs des PowerBoost (gelb = lädt, grün = voll) sind durch das Fenster „CHG“ auf der Rückseite sichtbar.
 - Der Dienst `gameboypi-battery` schreibt Spannung und Prozent nach `/dev/shm/battery` (z. B. `3.86 68`).
-- Bei Akku < 3,2 V (PowerBoost-Ausgang LBO auf GPIO20) oder 30 s unter 3,30 V fährt das Gerät automatisch herunter.
+- Bei Akku < 3,2 V (PowerBoost-Ausgang LBO auf GPIO20, 3 Messungen in Folge = 15 s) oder 30 s unter 3,30 V fährt das Gerät automatisch herunter.
+- **Abgleich der Spannungsanzeige (einmalig):** Spannung an TP1 mit dem Multimeter messen, mit `cat /dev/shm/battery` vergleichen und in `/opt/gameboypi/battery_monitor.py` `VBAT_CAL = Multimeter / Anzeige` setzen (z. B. 3,912 / 3,897 = 1.004), dann `sudo systemctl restart gameboypi-battery`. Die Software rechnet die 6-MΩ-Eingangsimpedanz des ADS1115 bereits heraus.
+- **Tests ohne Pi:** `python -m pytest software/tests -q` (Repo-Wurzel) prüft die Rechenlogik.
 - Eine Akkuanzeige *im Bild* ist nicht enthalten. Ein mögliches Overlay wäre `pngview` aus raspidmx mit Werten aus `/dev/shm/battery` (siehe offene Punkte in der README).
 
 ## Sicheres Herunterfahren

@@ -40,8 +40,8 @@ Das Logo kommt aus `logo/trace_logo.py` (Bild → `logo/gbx_logo.scad`). Das ist
 
 ### Kopplung Platine ↔ Gehäuse (Achtung)
 
-Die Bauteilpositionen im Abschnitt „Bauteil-Positionen (aus design.py)“ der `.scad` sind **von Hand übertragen**: Bohrungen, Tasten, LED, Schalter, Klinke, Poti, Display. Wer in `design.py` etwas verschiebt, muss die `.scad` nachziehen und die Kollisionsprüfung laufen lassen. (Ein automatischer Abgleich steht im Roadmap-Backlog.)
+Die Bauteilpositionen im Abschnitt „Bauteil-Positionen (aus design.py)“ der `.scad` sind **von Hand übertragen**: Bohrungen, Tasten, LED, Schalter, Klinke, Poti, Display. Wer in `design.py` etwas verschiebt, muss die `.scad` nachziehen und die Kollisionsprüfung laufen lassen. Seit v1.2 prüft **`tools/check_consistency.py`** den Abgleich automatisch (Positionen und alle GPIOs in `config.txt.append`, `install.sh`, `battery_monitor.py`). VS-Code-Task „Konsistenz prüfen“.
 
 ## 3. Software: `software/`
 
-`configuration/install.sh` läuft auf dem Pi (RetroPie 4.8). Es ergänzt `/boot/config.txt` (Overlays für Tasten, Audio, Abschaltlogik), baut fbcp-ili9341 und installiert den Akku-Dienst `battery_monitor.py` (ADS1115 + LBO → `/dev/shm/battery`, Abschaltung bei leerem Akku). Die GPIO-Belegung muss zu `PI_PINS` in `design.py` passen.
+Die Rechenlogik von `battery_monitor.py` ist ohne Pi testbar: `python -m pytest software/tests -q`. `configuration/install.sh` läuft auf dem Pi (RetroPie 4.8). Es ergänzt `/boot/config.txt` (Overlays für Tasten, Audio, Abschaltlogik), baut fbcp-ili9341 und installiert den Akku-Dienst `battery_monitor.py` (ADS1115 + LBO → `/dev/shm/battery`, Abschaltung bei leerem Akku). Die GPIO-Belegung muss zu `PI_PINS` in `design.py` passen.

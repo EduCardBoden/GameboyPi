@@ -3,9 +3,15 @@
   "tasks": [
     {
       "label": "Alles bauen (Platine + Gehäuse)",
-      "dependsOn": ["Platine bauen (KiCad)", "Gehäuse bauen (OpenSCAD)"],
+      "dependsOn": [
+        "Platine bauen (KiCad)",
+        "Gehäuse bauen (OpenSCAD)"
+      ],
       "dependsOrder": "sequence",
-      "group": { "kind": "build", "isDefault": true },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": []
     },
     {
@@ -38,14 +44,63 @@
       "label": "Platine in KiCad öffnen",
       "type": "shell",
       "command": "Start-Process \"$env:LOCALAPPDATA/Programs/KiCad/10.0/bin/kicad.exe\" -ArgumentList \"${workspaceFolder}/electronics/kicad-project/GameboyPi.kicad_pro\"",
-      "options": { "shell": { "executable": "powershell.exe", "args": ["-Command"] } },
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-Command"
+          ]
+        }
+      },
       "problemMatcher": []
     },
     {
       "label": "Gehäuse in OpenSCAD öffnen (Live-Vorschau)",
       "type": "shell",
       "command": "Start-Process 'C:/Program Files/OpenSCAD/openscad.exe' -ArgumentList '${workspaceFolder}/mechanical/cad-source/gameboy_pi_case.scad'",
-      "options": { "shell": { "executable": "powershell.exe", "args": ["-Command"] } },
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-Command"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Konsistenz prüfen (Platine ↔ Gehäuse ↔ Software)",
+      "type": "shell",
+      "command": "& \"${env:LOCALAPPDATA}/Programs/KiCad/10.0/bin/python.exe\" tools/check_consistency.py",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-Command"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "STL-Prüfung (geschlossen, Masse)",
+      "type": "shell",
+      "command": "& \"${env:LOCALAPPDATA}/Programs/KiCad/10.0/bin/python.exe\" tools/stl_report.py",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-Command"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Software-Tests (battery_monitor)",
+      "detail": "braucht pytest: python -m pip install pytest",
+      "type": "shell",
+      "command": "python -m pytest software/tests -q",
       "problemMatcher": []
     }
   ]

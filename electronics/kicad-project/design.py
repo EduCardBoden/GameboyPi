@@ -106,7 +106,9 @@ part("R9", "Device:R", "100k", R_AX, {1: "PWR_KEEP", 2: "GND"}, pos=(62.0, 114.0
 # LBO (bis 4.2 V) über Schottky-Diode auf 3.3-V-GPIO: nur nach unten ziehen
 part("D2", "Device:D_Schottky", "BAT85", "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal",
      {1: "PB_LBO", 2: "LBO_N"}, pos=(36.0, 118.0), side="B", group="power")
-part("R10", "Device:R", "10k", R_AX, {1: "+3V3", 2: "LBO_N"}, pos=(46.0, 118.0), side="B", group="power")
+# v1.2: 100k statt 10k. LBO des TPS61090 ist Open-Drain, max. 100 uA Low-Strom (TI-Datenblatt).
+# 10k zogen ~0.3 mA. Mit 100k: (3.3 V - 0.25 V) / 100k = 31 uA. GPIO20-Pull im Pi ist aus (config.txt).
+part("R10", "Device:R", "100k", R_AX, {1: "+3V3", 2: "LBO_N"}, pos=(46.0, 118.0), side="B", group="power")
 # Akkuspannungsmessung: 100k/100k -> max. 2.1 V am ADS1115 AIN0
 part("R11", "Device:R", "100k", R_AX, {1: "VBAT", 2: "VBAT_SENSE"}, pos=(56.0, 118.0), side="B", group="power")
 part("R12", "Device:R", "100k", R_AX, {1: "VBAT_SENSE", 2: "GND"}, pos=(66.0, 118.0), side="B", group="power")
@@ -141,8 +143,11 @@ part("C5", "Device:C_Polarized", "100uF 10V ECE-A1AKS101", "Capacitor_THT:CP_Rad
 # Klinkenbuchse mit Schaltkontakten: ohne Stecker gehen T/R über TN/RN zum Lautsprecherpfad
 part("J7", "Connector_Audio:AudioJack3_SwitchTR", "SJ1-3525N", "Connector_Audio:Jack_3.5mm_CUI_SJ1-3525N_Horizontal",
      {"T": "HP_L", "R": "HP_R", "S": "GND", "TN": "SPK_L", "RN": "SPK_R"}, pos=(34.0, 126.2), group="audio")
-part("R6", "Device:R", "10k", R_AX, {1: "SPK_L", 2: "SPK_MIX"}, pos=(AUD_RX, 126.2), group="audio")
-part("R7", "Device:R", "10k", R_AX, {1: "SPK_R", 2: "SPK_MIX"}, pos=(AUD_RX, 129.5), group="audio")
+# v1.2: 47k statt 10k begrenzen die Lautsprecherleistung. PAM8302 hat 24 dB (x15.8) und schafft
+# ~1.4 W an 8 Ohm, der AS02008MR-5-R verträgt 0.5 W (max. 0.8 W). Mit 47k bleibt AMP_IN bei
+# Vollaussteuerung (0.42 V eff.) auch ohne Last unter 0.126 V eff. -> <= 2.0 V eff. = 0.5 W. Rechnung: PCB_DESIGN.md
+part("R6", "Device:R", "47k", R_AX, {1: "SPK_L", 2: "SPK_MIX"}, pos=(AUD_RX, 126.2), group="audio")
+part("R7", "Device:R", "47k", R_AX, {1: "SPK_R", 2: "SPK_MIX"}, pos=(AUD_RX, 129.5), group="audio")
 # Lautstärke (Achse zeigt aus der linken Gehäuseseite)
 # Bourns PTV09A-2020F-A103: liegend (PTV09A-2), 10k log, abgeflachte 6-mm-Achse (passt zum Knopf)
 part("RV1", "Device:R_Potentiometer", "PTV09A-2020F-A103 10k log", "Potentiometer_THT:Potentiometer_Bourns_PTV09A-2_Single_Horizontal",

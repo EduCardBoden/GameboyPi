@@ -219,10 +219,10 @@ for i, lbl in enumerate(["VCC", "GND", "CS", "RST", "DC", "SDI", "SCK", "LED", "
     text(lbl, j2x + 4.2, LCD_ORIGIN[1] + 4.85 + i * 2.54, size=0.8)
 rect(LCD_ORIGIN[0], LCD_ORIGIN[1], LCD_ORIGIN[0] + LCD_SIZE[0], LCD_ORIGIN[1] + LCD_SIZE[1], pcbnew.F_Fab)
 text("2.4\" ILI9341 SPI (MSP2401) - Glas nach vorne, 4mm Abstand", 39, 40, layer=pcbnew.F_Fab, size=1.2)
-text("GameboyPi v1.1", 45, 66, size=1.5, bold=True)
+text("GameboyPi v1.2", 45, 66, size=1.5, bold=True)
 text("POWER", 60, 7.2, size=0.9)
 text("PHONES", 34, 119.3, size=0.8)
-text("SPEAKER 20mm (Gehaeuse)", 62, 131.5, size=0.8)
+text("SPEAKER 20mm (im Gehaeuse)", 59.5, 105.0, size=0.8)  # v1.2: nicht mehr ueber den Testpunkt-Pads
 
 B = pcbnew.B_SilkS
 text("Raspberry Pi Zero 2 W - Bauteilseite zur Platine", 39, 21, layer=B, size=1.0)
@@ -248,7 +248,7 @@ text("AVDD>AGND", 42.6, 74.0, layer=B, size=0.8)
 # Service
 text("UART GND TX RX", 46.5, 127.0, layer=B, size=0.8)
 text("BAT  5V  3V3 GND  EN  AMP", 56.5, 129.4, layer=B, size=0.8)
-text("GameboyPi v1.1  Rueckseite", 59.5, 110.5, layer=B, size=0.9)
+text("GameboyPi v1.2  Rueckseite", 59.5, 110.5, layer=B, size=0.9)
 
 # ---------- GND-Flächen auf beiden Lagen ----------
 gnd = get_net("GND")

@@ -12,7 +12,7 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "Q2","BS170","TO-92_Inline_Wide",44.040000,-114.000000,180.000000,bottom
 "R8","1M","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",55.810000,-114.000000,180.000000,bottom
 "R9","100k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",65.810000,-114.000000,180.000000,bottom
-"R10","10k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",49.810000,-118.000000,180.000000,bottom
+"R10","100k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",49.810000,-118.000000,180.000000,bottom
 "R11","100k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",59.810000,-118.000000,180.000000,bottom
 "R12","100k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",69.810000,-118.000000,180.000000,bottom
 "RV1","PTV09A-2020F-A103 10k log","Potentiometer_Bourns_PTV09A-2_Single_Horizontal",3.700000,-60.000000,180.000000,bottom
@@ -27,8 +27,8 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "R3","150","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-116.300000,0.000000,top
 "R4","270","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-119.600000,0.000000,top
 "R5","150","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-122.900000,0.000000,top
-"R6","10k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-126.200000,0.000000,top
-"R7","10k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-129.500000,0.000000,top
+"R6","47k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-126.200000,0.000000,top
+"R7","47k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",11.390000,-129.500000,0.000000,top
 "SW1","UP","SW_PUSH_6mm",15.750000,-76.250000,0.000000,top
 "SW2","DOWN","SW_PUSH_6mm",15.750000,-91.250000,0.000000,top
 "SW3","LEFT","SW_PUSH_6mm",8.250000,-83.750000,0.000000,top
