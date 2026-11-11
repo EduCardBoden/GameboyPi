@@ -13,7 +13,8 @@ Ergebnisse und der vollständige Inbetriebnahme-Messplan stehen in [testing.md](
 | Kollision | `mechanical/cad-source/build.ps1` | Änderung an `.scad` | 0 Kollisionen |
 | STL | `tools/stl_report.py` | nach STL-Export | 0 offene Kanten |
 | Software | `pytest software/tests` | Änderung an `battery_monitor.py` | alle bestanden |
-| Shell | `bash -n install.sh` | Änderung an `install.sh` | ok |
+| Shell | `bash -n` + `shellcheck -s bash install.sh` | Änderung an `install.sh` | 0 Befunde |
+| STEP | `tools/scad_to_step.py` (FreeCAD) | nach STL-Export | 11/11 ok, Abw. < 0,5 % |
 
 ## Manuell vor der Bestellung
 - Gerber im JLCPCB-Viewer ansehen (Freerouting-Layout wechselt bei jedem Build)

@@ -33,7 +33,19 @@ Zeiten MEZ. Werkzeuge: KiCad 10.0.6 (kicad-cli, pcbnew-Python), Freerouting 2.5,
 | 20:17 | PCB-Build 4 (final) | ERC 0/0, DRC 0 Fehler/101 Warn., 0 unverbunden, 604 Bahnen, 25 Vias, PTH 206; Gerber-Zip = Bestellpaket (MD5 4f6c694a) |
 | 20:18–20:40 | Word-Bericht: `tools/make_report.py` (python-docx) + `tools/finalize_report.ps1` (Word aktualisiert TOC, exportiert PDF) | 16 Seiten, 5 Abbildungen, 20 Tabellen. Probleme: Word hängt unsichtbar beim Öffnen direkt aus Dokumente und bei `Save()` im Kompatibilitätsmodus → Temp-Kopie + `SaveAs2` (Modus 15) + 120-s-Watchdog; hängende eigene Word-Prozesse beendet. Sichtprüfung aller Seiten als PNG: wörtliche `**` in Zellen, falsche Bildunterschrift, Querverweis, Fußzeilengröße → korrigiert |
 
+## 2026-11-11 – Nachtrag: Werkzeuge installieren (Auftrag „installiere alles was du installieren musst“)
+
+| Zeit | Tätigkeit | Ergebnis |
+|---|---|---|
+| 20:42 | Bestand geprüft: kein eigenständiges Python (nur MSYS2 ohne pip + KiCad-Python), kein FreeCAD, kein shellcheck, kein pdftoppm | |
+| 20:43 | winget: Python 3.13.17, ShellCheck 0.11.0, Poppler 25.07.0 (Benutzerinstallation), FreeCAD 1.1.4 | alle „Successfully installed“; PATH: Python313 steht vor MSYS2 |
+| 20:44 | pip: python-docx, pypdf, pytest, fonttools | Import-Test ok |
+| 20:45 | Funktionstest | shellcheck `install.sh`: **0 Befunde**; pytest 7/7; Konsistenz 0 Abweichungen; FreeCAD 1.1.4 startet |
+| 20:46 | STEP über FreeCAD-CSG-Import versucht | gescheitert („Input shape is null“ bei offset/circle-Extrusionen) → verworfen |
+| 20:50 | `tools/scad_to_step.py` (STL → B-Rep → STEP) | 11/11 Teile gültig, Volumenabweichung ≤ 0,004 %, Rücklesetest Front/Rückschale ok |
+| 20:55 | In Build, Tasks, Hook und `.gitignore` eingebunden | Fehler beim Einfügen: Git-Bash-Heredoc halbierte Backslashes (`\b` in `1.1\bin` wurde zum Steuerzeichen im FreeCAD-Pfad von `build.ps1`) → Zeile mit `chr(92)` neu geschrieben, Parser 0 Fehler, Block einzeln ausgeführt ok |
+
 ## Nicht erledigt
 - Physischer Aufbau, Messungen, Probedruck (keine Hardware vorhanden)
-- Gehäuse-STEP (siehe E7), JLCPCB-Preis (Rechner nicht abfragbar), Neuprüfung der DigiKey-Kleinteilpreise
+- JLCPCB-Preis (Rechner nicht abfragbar), Neuprüfung der DigiKey-Kleinteilpreise
 - Kein neuer Gehäuse-Build nötig: `.scad` unverändert, Kollisionsbericht vom 21.10.2026 gilt weiter

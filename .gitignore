@@ -4,6 +4,8 @@ tools/freerouting/*.exe
 tools/freerouting/*.zip
 
 # Build-Ausgaben / Caches
+# STEP-Export (~44 MB), erzeugbar mit tools/scad_to_step.py (4 min)
+mechanical/step/*.step
 build/
 __pycache__/
 *.pyc

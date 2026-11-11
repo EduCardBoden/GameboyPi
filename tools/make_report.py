@@ -480,8 +480,10 @@ P("Empfohlen: PLA, 0,2 mm Schichthöhe, 3 Wände, 20 % Füllung. Spiel für bewe
   "11 STL-Dateien ergab geschlossene Hüllen (0 offene Kanten). Die Kollisionsprüfung von 21 Bauteil-Hüllkörpern "
   "gegen beide Schalen ergab keine Kollision. Ein neues Prüfwerkzeug vergleicht 36 Positionen und Pinbelegungen "
   "zwischen Platine, Gehäuse und Software und meldet jede Abweichung.")
-NOTE("Ein STEP-Export des Gehäuses ist mit OpenSCAD 2021 nicht möglich, FreeCAD ist nicht installiert. Ein aus "
-     "dem STL umgewandeltes STEP wäre nur ein Facettenmodell. Die Platine liegt als STEP vor.", "Einschränkung: ")
+NOTE("Alle 11 Gehäuseteile liegen zusätzlich als STEP-Volumenkörper vor (mechanical/step, erzeugt mit FreeCAD 1.1.4). "
+     "Die Körper sind gültig und geschlossen, das Volumen stimmt auf ± 0,004 % mit den Druckdaten überein. Ebene Flächen "
+     "sind zusammengefasst, Rundungen bleiben facettiert. Die editierbare Quelle ist weiterhin die OpenSCAD-Datei; "
+     "der direkte CSG-Import in FreeCAD scheiterte an den offset()-Extrusionen.", "STEP-Export: ")
 
 # =====================================================================
 H1("7 Firmware und Software")
@@ -577,7 +579,8 @@ H1("10 Tests und Qualitätssicherung")
 H2("10.1 Durchgeführte Prüfungen")
 TABLE(["Bereich", "Prüfung", "Ergebnis"], [
     ["Software", "7 Unit-Tests battery_monitor.py (pytest)", "7/7 bestanden"],
-    ["Software", "Syntax install.sh (bash -n), battery_monitor.py (py_compile)", "ok"],
+    ["Software", "install.sh: bash -n + ShellCheck 0.11; battery_monitor.py: py_compile", "ok, 0 ShellCheck-Befunde"],
+    ["Mechanik", "STEP-Export (FreeCAD 1.1.4) und Rücklesetest", "11/11 gültig, Volumen ± 0,004 %"],
     ["Elektrik", "Netzliste, ERC", "0 Abweichungen, 0/0"],
     ["Leiterplatte", "DRC, Parität, Routing", "0 Fehler, 0 unverbunden, 0 ungeroutet"],
     ["Leiterplatte", "Bahnbreiten, Bohrdaten", "Versorgung ≥ 0,75 mm, Bohrung ≥ 0,30 mm"],
@@ -638,7 +641,7 @@ BUL(["Prototyp aufbauen und den Messplan abarbeiten; Ergebnisse in TEST_RESULTS.
      "USB-C-Ladebuchse über ein anderes Lademodul.",
      "Schultertasten L/R über die freien GPIOs 7, 18 und 21.",
      "Manuelles Nachrouten der Audio- und SPI-Bereiche nach einer Rauschmessung.",
-     "Gehäuse zusätzlich in einem B-Rep-CAD (FreeCAD/CadQuery) für STEP-Austausch.",
+     "Gehäuse als Feature-Modell in FreeCAD/CadQuery mit echten Rundungen (facettierte STEP-Körper liegen bereits vor).",
      "Langfristig: Bookworm-kompatibler Display-Treiber oder I2S-Audio."])
 
 # =====================================================================

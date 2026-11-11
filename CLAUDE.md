@@ -39,4 +39,5 @@ Expected results: ERC 0/0, DRC 0 errors (≈101 cosmetic silk/thermal warnings),
 - KiCad **10.0** in `%LOCALAPPDATA%\Programs\KiCad\10.0`. Run its `python.exe` for all `electronics/kicad-project/*.py` (they import `pcbnew`). The version appears in `build.ps1`, `make_sch.py`, `make_pcb.py`, `check_netlist.py` and `.vscode/*`; change all of them if you upgrade.
 - Freerouting 2.5 jar in `tools/freerouting/` (gitignored), Java ≥ 25. `route.py` finds the newest Microsoft JDK ≥ 25 automatically; you can override it with the `GAMEBOYPI_JAVA` env var.
 - OpenSCAD **2021.01** (`C:\Program Files\OpenSCAD`), which is slow (CGAL). The collision check runs 8 parallel jobs.
+- Python 3.13 (`python`/`py`, first in user PATH) has python-docx, pypdf, pytest. FreeCAD 1.1.4 in `%LOCALAPPDATA%\Programs\FreeCAD 1.1` (STEP export via `tools/scad_to_step.py`, called by the case build). ShellCheck and Poppler (pdftoppm) via winget.
 - Logo tracing (`mechanical/cad-source/logo/trace_logo.py`) needs scikit-image + pymupdf. Run it only if the logo image changes.

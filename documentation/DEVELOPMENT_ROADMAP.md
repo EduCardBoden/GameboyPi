@@ -23,7 +23,7 @@
 | USB-C-Ladebuchse (PowerBoost hat Micro-USB) | zeitgemäßer Stecker | anderes Lademodul oder USB-C-Adapterplatine |
 | Manuelles Routing der Audio-/SPI-Bereiche | weniger Übersprechen | Messung des Rauschens |
 | Schultertasten L/R (GPIO 7, 18, 21 frei) | SNES/GBA-Spiele | neue Taster am Rand + Gehäuse |
-| Gehäuse-STEP über FreeCAD/CadQuery | Austausch mit anderen CAD-Systemen | Werkzeugwechsel |
+| Gehäuse als Feature-Modell in FreeCAD/CadQuery (echte Rundungen) | Weiterkonstruktion in anderem CAD | Neuaufbau; facettierte STEP-Körper gibt es seit v1.2 |
 
 ## Experimentell
 - Raspberry Pi OS Bookworm mit `mipi-dbi-spi` statt fbcp-ili9341 (aktueller Kernel, aber langsamer)

@@ -55,4 +55,13 @@ foreach ($p in "front", "front_logo_silver", "front_logo_purple", "back", "back_
 # 4) Bestellpaket (bestellung\3_3d_druck) aktuell halten
 $order = Resolve-Path "..\..\bestellung\3_3d_druck"
 Copy-Item "$stl\*.stl", "$prev\design_front.png", "$prev\design_back.png" $order -Force
+# 5) STEP-Volumenkörper (FreeCAD, optional)
+$fc = "$env:LOCALAPPDATA\Programs\FreeCAD 1.1\bin\freecadcmd.exe"
+if (Test-Path $fc) {
+    Write-Host "STEP-Export (FreeCAD) ..."
+    Push-Location ..\..
+    & $fc tools/scad_to_step.py 2>&1 | Out-Null
+    Pop-Location
+    Get-Content ..\step\step_report.txt -Encoding UTF8 | Select-Object -Last 1 | Write-Host
+} else { Write-Host "FreeCAD nicht gefunden - STEP-Export übersprungen" }
 Write-Host "fertig."

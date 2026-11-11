@@ -34,6 +34,7 @@ GameboyPi/
 │   │   ├── logo/                 ← GBX-Logo: Originalbild, trace_logo.py (Vektorisierung), gbx_logo.scad
 │   │   └── fonts/                ← Michroma (SIL Open Font License) für die Slogans
 │   ├── stl/                      ← front, back, dpad, ab, startselect, knob + 4 Logo-Einlagen (silber/lila)
+│   ├── step/                     ← dieselben Teile als STEP-Volumenkörper (FreeCAD, nicht im Git)
 │   └── previews/                 ← Vorschaubilder
 ├── software/
 │   ├── setup-guide.md            ← RetroPie-Einrichtung, Treiber, Tasten, Audio, Akku, Herunterfahren

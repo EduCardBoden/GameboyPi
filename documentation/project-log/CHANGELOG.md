@@ -25,5 +25,13 @@
 - neu: `documentation/final-report/GameBoy_Project_Engineering_Documentation.docx`
 - geändert: `README.md` (v1.2, Risiken 2 und 4 neu bewertet, Risiken 15 und 16 neu), `documentation/testing.md`, `wiring.md`, `battery-runtime.md` (gemessene Bahnbreiten), `software/setup-guide.md` (Kalibrierung, Lautstärke), `ARCHITECTURE.md`, `CLAUDE.md`, `bom/bill-of-materials.csv`, `bestellung/2_bauteile/digikey_mouser_bom.csv`, `Einkaufsliste.md`
 
+### Nachtrag 11.11.2026, 20:45 – Werkzeuge installiert
+- Installiert per winget: Python 3.13.17 (+ python-docx 1.2.0, pypdf 7.0.1, pytest 9.2.0, fonttools), FreeCAD 1.1.4, ShellCheck 0.11.0, Poppler 25.07.0
+- neu: `tools/scad_to_step.py` (STL → STEP), Ausgabe `mechanical/step/` (STEP nicht im Git, `step_report.txt` schon)
+- `mechanical/cad-source/build.ps1`: Schritt 5 STEP-Export, wenn FreeCAD vorhanden
+- `.claude/hooks/guard-generated.js`: `mechanical/step/` als erzeugt geschützt
+- `.vscode/tasks.json`: Tasks „STEP exportieren (FreeCAD)“, „Shell-Skripte prüfen (shellcheck)“
+- `.gitignore`: `mechanical/step/*.step`
+
 ### Unverändert
 - `mechanical/cad-source/gameboy_pi_case.scad` und STLs (keine Maßänderung nötig, Konsistenz bestätigt)

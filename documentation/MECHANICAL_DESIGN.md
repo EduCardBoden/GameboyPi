@@ -62,7 +62,7 @@ Alternative bei häufigem Öffnen: Gewindeeinsätze M2,5 (Ø 3,5 mm), dann Dom a
 Alle 11 STLs sind geschlossen (0 offene Kanten, `tools/stl_report.py`). Kollisionsprüfung: 21 Hüllkörper, 0 Kollisionen (`build/collision_report.txt`).
 Material PLA (matt schwarz + Silk silber/lila), 0,2 mm Schicht, 3 Wände, 20 % Infill. PETG wäre wärmefester (Pi bis ≈ 60 °C Gehäuseinnenluft), passt aber ohne Änderung.
 
-## Nicht umgesetzt / Grenzen
+## STEP-Export und Grenzen
 
-- **STEP des Gehäuses:** OpenSCAD 2021 exportiert kein STEP, FreeCAD ist nicht installiert. Ein aus STL umgewandeltes STEP wäre nur ein Facettenmodell ohne Nutzen für die Weiterkonstruktion. Die Platine liegt als STEP vor (`electronics/assembly/GameboyPi.step`).
+- **STEP des Gehäuses (seit 11.11.2026):** `mechanical/step/*.step`, erzeugt von `tools/scad_to_step.py` mit FreeCAD 1.1.4 (läuft automatisch am Ende des Gehäuse-Builds, ~4 min). Alle 11 Teile sind gültige, geschlossene Volumenkörper, Volumen = STL ± 0,004 %, Maße geprüft (Front 84 × 140 × 13,7, Rückschale 84 × 140 × 15,6 mm). Ebene Flächen sind zusammengefasst, Rundungen bleiben facettiert ($fn = 64). Gut zum Messen, für Baugruppen und Passungsprüfungen in anderen CAD-Programmen. Editierbare Quelle bleibt die `.scad`. Der direkte CSG-Import in FreeCAD scheitert an den `offset()`-Extrusionen. Die STEP-Dateien (~44 MB) sind nicht im Git, nur `step_report.txt`.
 - Bauhöhen von PTV09A-2, SJ1-3525N, Elkos und Lautsprecher sind nicht gemessen (README-Risiko 5). Erst die Frontschale probedrucken.

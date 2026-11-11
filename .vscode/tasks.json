@@ -98,9 +98,30 @@
     },
     {
       "label": "Software-Tests (battery_monitor)",
-      "detail": "braucht pytest: python -m pip install pytest",
+      "detail": "Python 3.13 + pytest (installiert 11.11.2026)",
       "type": "shell",
       "command": "python -m pytest software/tests -q",
+      "problemMatcher": []
+    },
+    {
+      "label": "STEP exportieren (FreeCAD)",
+      "detail": "STL -> STEP-Volumenkörper in mechanical/step (~4 min)",
+      "type": "shell",
+      "command": "& \"${env:LOCALAPPDATA}/Programs/FreeCAD 1.1/bin/freecadcmd.exe\" tools/scad_to_step.py; Get-Content mechanical/step/step_report.txt -Encoding UTF8",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-Command"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Shell-Skripte prüfen (shellcheck)",
+      "type": "shell",
+      "command": "shellcheck -s bash software/configuration/install.sh",
       "problemMatcher": []
     }
   ]

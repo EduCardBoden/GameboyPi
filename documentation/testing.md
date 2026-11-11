@@ -18,7 +18,8 @@ Alle Prüfungen laufen automatisch über `electronics/kicad-project/build.ps1` u
 | Konsistenz design.py ↔ Gehäuse ↔ Pi-Software (v1.2) | `tools/check_consistency.py` (36 Prüfungen: Löcher, Tasten, LED, Klinke, Poti, Schalter, Display, alle GPIOs in config.txt/install.sh/battery_monitor.py) | **0 Abweichungen**. Mutationstest: 3 absichtlich eingebaute Fehler wurden alle gemeldet |
 | STL-Geometrie (v1.2) | `tools/stl_report.py` (Kantenzählung, Volumen) | alle 11 STLs geschlossen (0 offene Kanten), 85 g PLA bei Vollmaterial |
 | Akku-Software (v1.2) | `pytest software/tests` (7 Tests: Teilerfaktor, Rohwert→Spannung, Kennlinie, LBO-Entprellung, Unterspannungs-Verzögerung, ADC-Ausfall) | **7/7 bestanden** |
-| Shell-Syntax `install.sh` | `bash -n` | ok (shellcheck nicht installiert) |
+| Shell-Skript `install.sh` | `bash -n` + ShellCheck 0.11.0 | ok, 0 Befunde |
+| Gehäuse-STEP | FreeCAD 1.1.4 (`tools/scad_to_step.py`) | 11/11 gültige Volumenkörper, Volumen = STL ± 0,004 % |
 | Logo-Lesbarkeit | Renderings `previews/design_front.png`, `design_back.png` | Vorderseite von vorne, Rückseite von hinten lesbar (nicht gespiegelt). Einlagen liegen deckungsgleich in den 0,6-mm-Vertiefungen. |
 
 ### Verbleibende DRC-Warnungen (bewusst akzeptiert)

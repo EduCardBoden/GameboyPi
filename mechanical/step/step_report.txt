@@ -1,0 +1,12 @@
+ab                   Körper   2  Flächen    392  gültig True   V   1027.7 mm³ (STL   1027.7, Abw. 0.000 %)  ok
+back                 Körper   1  Flächen  11535  gültig True   V  35073.8 mm³ (STL  35075.0, Abw. 0.003 %)  ok
+back_logo_purple     Körper   2  Flächen     86  gültig True   V    100.8 mm³ (STL    100.8, Abw. 0.001 %)  ok
+back_logo_silver     Körper  35  Flächen   8388  gültig True   V    309.5 mm³ (STL    309.5, Abw. 0.001 %)  ok
+dpad                 Körper   1  Flächen    744  gültig True   V   2104.8 mm³ (STL   2104.8, Abw. 0.000 %)  ok
+front                Körper   1  Flächen   5005  gültig True   V  28775.7 mm³ (STL  28776.8, Abw. 0.004 %)  ok
+front_logo_purple    Körper   2  Flächen     86  gültig True   V     44.1 mm³ (STL     44.1, Abw. 0.000 %)  ok
+front_logo_silver    Körper   2  Flächen    149  gültig True   V     79.5 mm³ (STL     79.5, Abw. 0.001 %)  ok
+knob                 Körper   1  Flächen    240  gültig True   V    640.0 mm³ (STL    640.0, Abw. 0.000 %)  ok
+spacers              Körper   2  Flächen    260  gültig True   V    153.3 mm³ (STL    153.3, Abw. 0.000 %)  ok
+startselect          Körper   2  Flächen    536  gültig True   V    561.2 mm³ (STL    561.2, Abw. 0.000 %)  ok
+Ergebnis: 11 von 11 Teilen als STEP in mechanical/step/

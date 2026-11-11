@@ -32,11 +32,12 @@
 - **Analyse:** Das Design besteht alle Prüfungen. Eine Neukonstruktion ohne Messdaten würde Risiko hinzufügen, aber keine Information. Die fehlenden Daten (Bauhöhen, echte Ströme) gibt es nur durch einen Aufbau.
 - **Entscheidung:** gezielte, rechnerisch begründete Korrekturen (E1–E4), Neukonstruktion erst nach dem Prototyp (Roadmap).
 
-## E7 – Kein Gehäuse-STEP, kein FreeCAD
+## E7 – Gehäuse-STEP
 - **Problem:** STEP-Export gefordert. OpenSCAD 2021 kann das nicht.
 - **Alternativen:** FreeCAD installieren (≈ 1 GB) und STL → STEP wandeln, CadQuery, OpenSCAD-Nightly.
 - **Analyse:** Ein aus dem STL gewandeltes STEP ist ein Facettenmodell ohne Nutzen für die Weiterkonstruktion. Echte B-Rep-STEPs erfordern einen Neuaufbau in einem anderen CAD.
-- **Entscheidung:** nicht umgesetzt, in der Roadmap.
+- **Entscheidung (Stand 1):** nicht umgesetzt.
+- **Revision 11.11.2026, 20:45:** Auf Wunsch des Users wurde FreeCAD 1.1.4 installiert. Der direkte CSG-Import ließ sich nicht verwenden (Extrusionen von `offset()`/`circle()` liefern leere Formen). Umgesetzt wurde STL → B-Rep → `removeSplitter` → Volumenkörper → STEP. Damit liegen maßhaltige, gültige Volumenkörper vor (Volumenabweichung ≤ 0,004 %) mit facettierten Rundungen. Ein echtes Feature-Modell bliebe ein Neuaufbau in FreeCAD/CadQuery (Roadmap).
 
 ## E8 – Automatische Konsistenzprüfung statt automatischer Übernahme
 - **Problem:** Positionen werden von Hand von `design.py` in die `.scad` übertragen.

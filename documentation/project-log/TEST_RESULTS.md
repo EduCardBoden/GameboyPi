@@ -14,7 +14,8 @@ Alle Tests auf dem Entwicklungs-PC (Windows 11). **Keine physischen Tests** – 
 | T8 | Unit-Tests | 20:04 | wie T6 | **7/7 bestanden** | – | – |
 | T9 | Syntax `battery_monitor.py` | 20:04 | `py_compile` | ok | – | – |
 | T10 | PCB-Build 2 | 20:04 | `build.ps1` | 0 Fehler, 101 Warn. | Text berührt Loch H5 → x = 59,5 | – |
-| T11 | Syntax `install.sh` | 20:05 | `bash -n` (Git Bash) | ok | – | shellcheck nicht installiert |
+| T11 | Syntax `install.sh` | 20:05 | `bash -n` (Git Bash) | ok | – | – |
+| T11b | Statische Analyse `install.sh` | 20:45 | ShellCheck 0.11.0, `-s bash` | **0 Befunde** | – | – |
 | T12 | Konsistenz | 20:05 | `tools/check_consistency.py` | 36 Prüfungen, 0 Abweichungen | – | – |
 | T13 | Mutationstest Konsistenz | 20:05 | 3 Fehler injiziert (btn_a, GPIO Taste A, RST-Pin) | 3/3 erkannt, Exit 1 | – | – |
 | T14 | PCB-Build 3 | 20:06 | `build.ps1` | **ERC 0/0; DRC 0 Fehler, 0 unverbunden, 101 Warn. (65 silk_overlap, 26 silk_over_copper, 8 silk_edge_clearance, 2 starved_thermal); 602 Bahnen, 30 Vias, 0 ungeroutet** | Schaltplan-Schriftfeld noch Rev 1.1 → make_sch.py | – |
@@ -25,6 +26,10 @@ Alle Tests auf dem Entwicklungs-PC (Windows 11). **Keine physischen Tests** – 
 | T18 | STL-Geometrie | 20:10 | `tools/stl_report.py` | 11/11 geschlossen, 85 g PLA Vollmaterial | – | – |
 | T19 | Kollisionsprüfung Gehäuse | 21.10.2026 (übernommen) | OpenSCAD, 21 Hüllkörper | 0 Kollisionen | – | gilt, da `.scad` unverändert |
 | T20 | Word-Bericht | 20:40 | python-docx 1.2 + Microsoft Word (COM: TOC-Update, SaveAs2, PDF-Export), Seiten-Rendering per WinRT | öffnet in Word, 16 Seiten, TOC mit Seitenzahlen, alle Seiten gesichtet | 4 Darstellungsfehler → behoben, siehe ACTIVITY_LOG | – |
+| T21 | Gehäuse-STEP | 20:50 | FreeCAD 1.1.4, `tools/scad_to_step.py` | 11/11 gültig und geschlossen, Volumen = STL ± 0,004 % | CSG-Import gescheitert → STL-Weg | Rundungen facettiert |
+| T22 | STEP-Rücklesetest | 20:52 | FreeCAD `Part.read` | front 84,0 × 140,0 × 13,7 mm, back 84,0 × 140,0 × 15,6 mm, gültig | – | – |
+| T23 | Software-Tests mit installiertem Python | 20:45 | Python 3.13.17, pytest 9.2.0 | 7/7 | – | – |
+| T24 | `build.ps1` (Gehäuse) nach Änderung | 20:58 | PowerShell-Parser + STEP-Block einzeln | 0 Parserfehler, 11/11 STEP | Steuerzeichen im Pfad → korrigiert | voller Gehäuse-Build (25 min) nicht nötig, `.scad` unverändert |
 
 ## Noch offen (physisch)
 Messplan `documentation/testing.md` Teil B (1.1–4.9 und 4.5b), Probedruck, Laufzeitmessung, Thermik, Lautstärke.

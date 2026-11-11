@@ -8,7 +8,7 @@ process.stdin.on("data", (c) => (raw += c)).on("end", () => {
   const rules = [
     [/\.kicad_(pcb|sch)$/i, "design.py / make_sch.py / make_pcb.py / route.py, then the pcb-build skill"],
     [/\/electronics\/(gerber|assembly|schematics)\//i, "the PCB generators, then the pcb-build skill"],
-    [/\/mechanical\/(stl|previews)\//i, "gameboy_pi_case.scad, then the case-build skill"],
+    [/\/mechanical\/(stl|previews|step)\//i, "gameboy_pi_case.scad, then the case-build skill"],
     [/\/bestellung\/.*\.(stl|zip|png)$/i, "the build scripts (they copy into bestellung/)"],
     [/\/build\/[^/]+$/i, "the build scripts (build/ is output)"],
   ];
