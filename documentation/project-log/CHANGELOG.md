@@ -33,5 +33,9 @@
 - `.vscode/tasks.json`: Tasks „STEP exportieren (FreeCAD)“, „Shell-Skripte prüfen (shellcheck)“
 - `.gitignore`: `mechanical/step/*.step`
 
+### Nachtrag 11.11.2026, 21:20 – Einkauf
+- R6/R7: Stackpole CF14JT47K0 (5 %) statt Yageo MFR-25FBF52-47K (nicht lieferbar bis 03/2027); BOM-CSV, DigiKey-CSV, FINAL_BOM.md
+- neu: `bestellung/Warenkoerbe.md`, `tools/make_cart_list.py` (Word-Liste in `Dokumente/Emulator`)
+
 ### Unverändert
 - `mechanical/cad-source/gameboy_pi_case.scad` und STLs (keine Maßänderung nötig, Konsistenz bestätigt)

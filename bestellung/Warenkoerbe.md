@@ -1,6 +1,6 @@
-# Warenkörbe – Stand 11.11.2026, 21:15
+# Warenkörbe – Stand 11.11.2026, 21:20 (DigiKey geändert)
 
-Direkt aus den Warenkörben ausgelesen (angemeldet als du). **Bestellt ist nichts.** Pro Shop gibt es **einen Link**, der alle Artikel zusammen öffnet.
+Direkt aus den Warenkörben ausgelesen (angemeldet als du). **Bestellt ist nichts.** Word-Fassung: `Dokumente/Emulator/GameboyPi_Warenkoerbe.docx` (erzeugt von `tools/make_cart_list.py`). Pro Shop gibt es **einen Link**, der alle Artikel zusammen öffnet.
 
 ## 1. Amazon – 7 Artikel im Warenkorb, 63,01 €
 
@@ -26,9 +26,9 @@ Unter „Für später gespeichert“ (nicht in der Summe, im Warenkorb unten mit
 
 Mit beiden: 93,30 €.
 
-## 2. DigiKey – 23 Positionen, 51,97 € + 25,00 € Versand = 76,97 €
+## 2. DigiKey – 23 Positionen, 51,84 € + 25,00 € Versand = 76,84 €
 
-**Link (Kopie des Warenkorbs, öffnet alle 23 Teile):** https://www.digikey.at/short/91fjcdzh
+**Link (Kopie des Warenkorbs, öffnet alle 23 Teile):** https://www.digikey.at/short/f3b0w9n4
 Dein eigener Warenkorb: https://www.digikey.at/ordering/shoppingcart
 
 | Pos | Teil | Herstellernr. | Menge | Preis |
@@ -52,15 +52,15 @@ Dein eigener Warenkorb: https://www.digikey.at/ordering/shoppingcart
 | 17 | Kondensator 33 nF | K333K15X7RF5TL2 | 3 | 0,78 € |
 | 18 | Kondensator 100 nF | K104K15X7RF5TL2 | 2 | 0,54 € |
 | 19 | Widerstand 100 k | MFR-25FBF52-100K | 10 | 0,37 € |
-| 20 | Widerstand 10 k | MFR-25FBF52-10K | 10 | 0,37 € |
-| 21 | Elko 100 µF 10 V | ECE-A1AKS101 | 3 | 0,96 € |
-| 22 | Elko 470 µF 10 V | 10YXJ470M6.3X11 | 1 | 0,30 € |
-| 23 | LED rot 3 mm | LTL-4221N | 2 | 0,34 € |
-| | **Zwischensumme** | | | **51,97 €** |
+| 20 | Elko 100 µF 10 V | ECE-A1AKS101 | 3 | 0,96 € |
+| 21 | Elko 470 µF 10 V | 10YXJ470M6.3X11 | 1 | 0,30 € |
+| 22 | LED rot 3 mm | LTL-4221N | 2 | 0,34 € |
+| 23 | Widerstand 47 kΩ 5 % (R6/R7, neu) | Stackpole CF14JT47K0 | 10 | 0,24 € |
+| | **Zwischensumme** | | | **51,84 €** |
 
-- **Für v1.2 fehlt:** 2 × Widerstand **47 kΩ** (MFR-25FBF52-47K, für R6/R7). Pos. 20 (10 kΩ) braucht v1.2 nicht mehr.
-- Pos. 23 (LED) hat Lieferrückstand, laut DigiKey wieder lagernd am 16.11.2026.
-- Ab 75 € Warenwert ist der Versand gratis, dir fehlen 23,03 €.
+- **Geändert 11.11.2026:** 10 kΩ entfernt (v1.2 braucht sie nicht mehr), 47 kΩ ergänzt. Der Yageo MFR-25FBF52-47K wäre erst ab 17.03.2027 lieferbar, deshalb der sofort lieferbare Stackpole CF14JT47K0 (5 %, 2,3 × 6,0 mm). 10 Stück (0,24 €) sind billiger als 4 (0,36 €).
+- Pos. 22 (LED) hat Lieferrückstand, laut DigiKey wieder lagernd am 16.11.2026.
+- Ab 75 € Warenwert ist der Versand gratis, dir fehlen 23,16 €.
 - Der geteilte Link zeigt den Stand von heute. Spätere Änderungen am Warenkorb übernimmt er nicht.
 
 ## 3. JLCPCB – Platine
@@ -79,5 +79,5 @@ Nicht auslesbar: Im Browser bist du bei JLCPCB nicht angemeldet, dort steht „S
 |---|---|
 | Amazon (Warenkorb) | 63,01 € |
 | Amazon (gemerkt: Akku + Litze) | 30,29 € |
-| DigiKey inkl. Versand | 76,97 € |
-| **Summe** | **170,27 €** |
+| DigiKey inkl. Versand | 76,84 € |
+| **Summe** | **170,14 €** |

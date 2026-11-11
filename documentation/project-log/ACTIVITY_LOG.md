@@ -45,6 +45,15 @@ Zeiten MEZ. Werkzeuge: KiCad 10.0.6 (kicad-cli, pcbnew-Python), Freerouting 2.5,
 | 20:50 | `tools/scad_to_step.py` (STL → B-Rep → STEP) | 11/11 Teile gültig, Volumenabweichung ≤ 0,004 %, Rücklesetest Front/Rückschale ok |
 | 20:55 | In Build, Tasks, Hook und `.gitignore` eingebunden | Fehler beim Einfügen: Git-Bash-Heredoc halbierte Backslashes (`\b` in `1.1\bin` wurde zum Steuerzeichen im FreeCAD-Pfad von `build.ps1`) → Zeile mit `chr(92)` neu geschrieben, Parser 0 Fehler, Block einzeln ausgeführt ok |
 
+## 2026-11-11 – Nachtrag: Warenkörbe und Ablage
+
+| Zeit | Tätigkeit | Ergebnis |
+|---|---|---|
+| 21:05 | Word/FreeCAD geschlossen, Bericht neu (Modus 15) | |
+| 21:10 | Warenkörbe im Browser ausgelesen | Amazon 7 Artikel 63,01 € + 2 gemerkt (Akku nicht lieferbar); DigiKey 23 Pos. 51,97 €; JLCPCB nicht angemeldet. Amazon-Sammellink `aws/cart/add` getestet: fügt nichts hinzu, Warenkorb unverändert |
+| 21:15 | DigiKey (auf Wunsch): 10 kΩ entfernt, 47 kΩ ergänzt | Yageo 47K erst ab 17.03.2027 lieferbar → durch Stackpole CF14JT47K0 ersetzt (sofort lieferbar, 10 Stk. 0,24 €); Zwischensumme 51,84 €; neuer Teilen-Link f3b0w9n4 |
+| 21:20 | Ordner `Dokumente/Emulator` angelegt | Bericht + `GameboyPi_Warenkoerbe.docx` (2 Seiten, per Word-PDF geprüft); Kopie im GameboyPi-Hauptordner entfernt |
+
 ## Nicht erledigt
 - Physischer Aufbau, Messungen, Probedruck (keine Hardware vorhanden)
 - JLCPCB-Preis (Rechner nicht abfragbar), Neuprüfung der DigiKey-Kleinteilpreise

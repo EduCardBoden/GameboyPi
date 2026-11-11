@@ -30,7 +30,7 @@ Legende Preisstatus: **geprüft** = Händlerseite am 11.11.2026 abgerufen · *v1
 | R1 | 1 kΩ | Yageo MFR-25FBF52-1K | 1 | LED-Vorwiderstand |
 | R2, R4 | 270 Ω | MFR-25FBF52-270R | 2 | PWM-Filter |
 | R3, R5 | 150 Ω | MFR-25FBF52-150R | 2 | PWM-Filter |
-| **R6, R7** | **47 kΩ** (v1.2, vorher 10 kΩ) | MFR-25FBF52-47K | 2 | Lautsprecher ≤ 0,5 W |
+| **R6, R7** | **47 kΩ 5 %** (v1.2, vorher 10 kΩ) | Stackpole CF14JT47K0 (DigiKey CF14JT47K0CT-ND) | 2 (10 bestellt) | Lautsprecher ≤ 0,5 W (mit −5 % im ungünstigsten Fall 0,52 W, unter 0,8 W max.). Yageo MFR-25FBF52-47K wäre erst ab 17.03.2027 lieferbar |
 | R8 | 1 MΩ | MFR-25FBF52-1M | 1 | Gate-Pull-up Q1 |
 | R9, **R10**, R11, R12 | 100 kΩ (R10 v1.2, vorher 10 kΩ) | MFR-25FBF52-100K | 4 | Pull-down, LBO-Pull-up, Spannungsteiler |
 | C2, C4 | 33 nF X7R RM 2,5 | Vishay K333K15X7RF5TL2 | 2 | PWM-Filter |
