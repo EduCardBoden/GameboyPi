@@ -123,6 +123,13 @@
       "type": "shell",
       "command": "shellcheck -s bash software/configuration/install.sh",
       "problemMatcher": []
+    },
+    {
+      "label": "Wegweiser aktualisieren (Documents/Emulator)",
+      "detail": "bettet Ordner und Dokumente neu in Wegweiser.html ein",
+      "type": "shell",
+      "command": "python tools/make_wegweiser.py",
+      "problemMatcher": []
     }
   ]
 }

@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GameboyPi Wegweiser</title>
+<!-- Vorlage für tools/make_wegweiser.py. Nicht die erzeugte Wegweiser.html bearbeiten, sondern diese Datei. -->
+<style>
+  :root {
+    --bg: #0b0b10; --panel: #15151f; --panel2: #1c1c29; --line: #2a2a3b;
+    --text: #ececf3; --muted: #9d9db2; --silver: #d3d6de; --purple: #8b5cf6; --purple2: #b79cff; --purple3: #2a2140;
+    --green: #4ade80; --amber: #fbbf24; --red: #f87171; --blue: #60a5fa;
+    --lcd: #9bbc0f; --lcd2: #8bac0f; --lcd4: #0f380f;
+    --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body { margin: 0; background: radial-gradient(1200px 600px at 80% -10%, #1d1433 0%, transparent 60%) fixed, var(--bg);
+         color: var(--text); font: 15px/1.55 "Segoe UI", system-ui, sans-serif; }
+  a { color: var(--purple2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  kbd { font-family: var(--mono); font-size: 12px; background: var(--panel2); border: 1px solid var(--line);
+        border-bottom-width: 2px; border-radius: 5px; padding: 0 6px; color: var(--silver); }
+  .hidden { display: none !important; }
+
+  /* ---------- Navigation ---------- */
+  nav.top { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(11, 11, 16, .85); border-bottom: 1px solid var(--line); }
+  .navin { max-width: 1240px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; }
+  .logo { font-family: var(--mono); font-weight: 700; letter-spacing: 1px; white-space: nowrap; color: var(--text); }
+  .logo:hover { text-decoration: none; } .logo .g { color: var(--silver); } .logo .x { color: var(--purple); }
+  .links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .links a { color: var(--muted); padding: 6px 10px; border-radius: 8px; white-space: nowrap; font-size: 14px; }
+  .links a:hover, .links a.active { background: var(--purple3); color: var(--text); text-decoration: none; }
+  .links a .n { font-family: var(--mono); font-size: 11px; color: var(--purple2); margin-right: 5px; }
+  .search { margin-left: auto; position: relative; flex: 0 1 300px; }
+  .search input { width: 100%; background: var(--panel); border: 1px solid var(--line); color: var(--text); border-radius: 10px;
+                  padding: 8px 12px 8px 34px; font-size: 14px; outline: none; }
+  .search input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, .25); }
+  .search::before { content: "⌕"; position: absolute; left: 11px; top: 50%; transform: translateY(-52%); color: var(--muted); font-size: 18px; }
+  .search kbd { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); }
+  .results { position: absolute; top: calc(100% + 6px); right: 0; width: min(520px, 92vw); max-height: 70vh; overflow: auto; background: var(--panel);
+             border: 1px solid var(--purple); border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.6); padding: 6px; }
+  .results a { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 8px 10px; border-radius: 8px; color: var(--text); }
+  .results a:hover, .results a.sel { background: var(--purple3); text-decoration: none; }
+  .results .rp { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  .results .rh { padding: 6px 10px 2px; font-size: 11px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 26px 20px 80px; }
+  section { margin-top: 46px; }
+  h2.sec { font-size: 22px; margin: 0 0 14px; display: flex; align-items: baseline; gap: 10px; }
+  h2.sec .num { font-family: var(--mono); color: var(--purple); font-size: 15px; }
+  h2.sec small { color: var(--muted); font-weight: 400; font-size: 14px; }
+
+  /* ---------- Hero ---------- */
+  .hero { display: grid; grid-template-columns: 300px 1fr; gap: 34px; align-items: center; }
+  .gb { width: 300px; background: linear-gradient(160deg, #1a1a22, #0e0e14); border: 1px solid #2d2d3d; border-radius: 18px 18px 60px 18px;
+        padding: 18px 20px 26px; box-shadow: 0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05); }
+  .bezel { background: #2b2b38; border-radius: 10px 10px 30px 10px; padding: 14px 18px 18px; }
+  .screen { background: var(--lcd); border-radius: 3px; height: 150px; padding: 10px 12px; font-family: var(--mono); color: var(--lcd4);
+            font-size: 12.5px; line-height: 1.45; position: relative; overflow: hidden; box-shadow: inset 0 0 0 3px var(--lcd2); }
+  .screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(15,56,15,.07) 0 1px, transparent 1px 3px); pointer-events: none; }
+  .cursor { display: inline-block; width: 7px; height: 12px; background: var(--lcd4); vertical-align: -1px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .brand { text-align: center; font-family: var(--mono); font-weight: 700; letter-spacing: 2px; margin: 12px 0 14px; color: var(--silver); }
+  .brand span { color: var(--purple); }
+  .pad { display: flex; justify-content: space-between; align-items: center; padding: 0 8px; }
+  .dpad { position: relative; width: 78px; height: 78px; }
+  .dpad button { position: absolute; width: 26px; height: 26px; background: #2e2e3c; border: none; color: var(--muted); cursor: pointer; font-size: 11px; }
+  .dpad button:hover { background: var(--purple); color: #fff; }
+  .dpad .u { left: 26px; top: 0; border-radius: 5px 5px 0 0; } .dpad .d { left: 26px; top: 52px; border-radius: 0 0 5px 5px; }
+  .dpad .l { left: 0; top: 26px; border-radius: 5px 0 0 5px; } .dpad .r { left: 52px; top: 26px; border-radius: 0 5px 5px 0; }
+  .dpad .c { position: absolute; left: 26px; top: 26px; width: 26px; height: 26px; background: #2e2e3c; }
+  .ab { display: flex; gap: 12px; transform: rotate(-22deg); }
+  .ab button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--purple); color: #fff; font-weight: 700;
+               font-family: var(--mono); cursor: pointer; box-shadow: 0 3px 0 #5b3bb8; }
+  .ab button:active { transform: translateY(2px); box-shadow: 0 1px 0 #5b3bb8; }
+  .ss { display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+  .ss button { background: #2e2e3c; border: none; border-radius: 8px; color: var(--muted); font-size: 10px; font-family: var(--mono);
+               padding: 4px 12px; cursor: pointer; transform: rotate(-22deg); }
+  .ss button:hover { background: var(--purple); color: #fff; }
+  .hero h1 { font-size: 40px; margin: 0 0 6px; line-height: 1.1; } .hero h1 .x { color: var(--purple); }
+  .lead { color: var(--muted); margin: 0 0 16px; max-width: 640px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .pill { font-size: 12.5px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+  .ok { color: var(--green); } .warn { color: var(--amber); } .bad { color: var(--red); }
+  .bar { height: 12px; background: var(--panel2); border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), var(--purple2)); border-radius: 999px; transition: width .8s ease; }
+  .barlabel { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .keys { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+  /* ---------- Kacheln ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; transition: transform .15s, border-color .15s, box-shadow .15s; }
+  .card:hover { transform: translateY(-2px); border-color: var(--purple); box-shadow: 0 10px 30px rgba(139, 92, 246, .15); }
+  .card .ic { font-size: 22px; } .card .want { font-weight: 650; margin: 4px 0 6px; }
+  .card .where { font-size: 13px; color: var(--muted); word-break: break-word; }
+  .card .row { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { display: inline-block; font-size: 13px; font-weight: 600; padding: 5px 11px; border-radius: 8px; background: var(--purple3); color: var(--purple2); }
+  .chip:hover { background: var(--purple); color: #fff; text-decoration: none; }
+  .chip.sub { background: var(--panel2); color: var(--muted); font-weight: 500; }
+  .chip.sub:hover { color: #fff; }
+
+  /* ---------- Fortschritt ---------- */
+  .steps { display: grid; gap: 10px; }
+  .step { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+  .step .dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 13px; border: 2px solid var(--line); color: var(--muted); }
+  .step.done .dot { background: var(--green); border-color: var(--green); color: #0b0b10; font-weight: 700; }
+  .step.half .dot { border-color: var(--amber); color: var(--amber); }
+  .step .t { font-weight: 600; } .step .s { font-size: 13px; color: var(--muted); }
+  .check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; }
+  .check input { accent-color: var(--purple); width: 16px; height: 16px; cursor: pointer; }
+
+  /* ---------- Einkauf ---------- */
+  .shops { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+  .shop { background: linear-gradient(160deg, #13283f, #111a28); border: 1px solid #284a73; border-radius: 14px; padding: 16px; }
+  .shop.amz { background: linear-gradient(160deg, #2e2410, #1a160d); border-color: #6b5420; }
+  .shop.jlc { background: linear-gradient(160deg, #2a2140, #17121f); border-color: #4c3a80; }
+  .shop h3 { margin: 0 0 4px; font-size: 18px; } .shop .price { font-family: var(--mono); font-size: 24px; font-weight: 700; margin: 6px 0; }
+  .shop .s { color: var(--muted); font-size: 13px; }
+  .btn { display: inline-block; margin-top: 12px; padding: 8px 14px; border-radius: 10px; background: var(--purple); color: #fff; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: inherit; }
+  .btn:hover { background: #7c4ef0; text-decoration: none; }
+  .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
+  .btn.ghost:hover { border-color: var(--purple); }
+  .sumline { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; }
+  .sumline b { color: var(--text); font-family: var(--mono); font-size: 18px; }
+
+  /* ---------- Karte ---------- */
+  .map { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px; overflow-x: auto; }
+  .map svg { display: block; min-width: 980px; width: 100%; height: auto; }
+  .map text { font-family: "Segoe UI", system-ui, sans-serif; }
+  .map a rect { transition: stroke .15s, filter .15s; }
+  .map a:hover rect { stroke: var(--purple2); stroke-width: 2.5; filter: drop-shadow(0 0 8px rgba(139,92,246,.5)); }
+  .legend { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+  /* ---------- Ordner-Übersicht ---------- */
+  .folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 10px; }
+  .folder { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line);
+            border-radius: 12px; padding: 12px 14px; color: var(--text); transition: border-color .15s, transform .15s; }
+  .folder:hover { border-color: var(--purple); transform: translateY(-1px); text-decoration: none; }
+  .folder .fi { font-size: 26px; text-align: center; } .folder .fn { font-weight: 650; }
+  .folder .fd { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ---------- Bilder ---------- */
+  .pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .pics figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px; text-align: center; cursor: zoom-in; }
+  .pics figure:hover { border-color: var(--purple); }
+  .pics img { width: 100%; height: 240px; object-fit: contain; border-radius: 8px; background: #fff; }
+  .pics figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- Viewer (Ordner + Dokumente) ---------- */
+  .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 14px; margin-bottom: 14px; }
+  .crumbs a, .crumbs span { padding: 4px 9px; border-radius: 7px; }
+  .crumbs a { background: var(--panel); border: 1px solid var(--line); color: var(--muted); }
+  .crumbs a:hover { color: var(--text); border-color: var(--purple); text-decoration: none; }
+  .crumbs .sep { color: var(--line); padding: 0; }
+  .crumbs span.cur { background: var(--purple3); color: var(--text); }
+  .vhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 16px;
+           padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .vhead h1 { margin: 0; font-size: 28px; line-height: 1.2; }
+  .vhead .vp { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 4px; word-break: break-all; }
+  .vhead .vd { color: var(--muted); margin-top: 6px; max-width: 760px; }
+  .vacts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vacts .btn { margin-top: 0; font-size: 13.5px; padding: 7px 12px; }
+
+  .flist { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .frow { display: grid; grid-template-columns: 36px 1fr 150px 130px; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line);
+          color: var(--text); transition: background .1s; }
+  .frow:last-child { border-bottom: none; }
+  .frow:hover { background: var(--panel2); text-decoration: none; }
+  .frow .ico { font-size: 22px; text-align: center; }
+  .frow .nm { font-weight: 550; word-break: break-word; } .frow .hint2 { font-size: 12px; color: var(--muted); }
+  .frow .sz, .frow .dt { font-size: 13px; color: var(--muted); text-align: right; font-family: var(--mono); }
+  .frow.head { background: var(--panel2); font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; }
+  .frow.head:hover { background: var(--panel2); }
+  .badge { display: inline-block; font-size: 10.5px; padding: 1px 7px; border-radius: 5px; margin-left: 8px; vertical-align: 2px; font-family: var(--mono); background: var(--panel2); color: var(--muted); }
+  .badge.read { background: var(--purple3); color: var(--purple2); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .thumbs figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px; cursor: zoom-in; text-align: center; }
+  .thumbs figure:hover { border-color: var(--purple); }
+  .thumbs img { width: 100%; height: 150px; object-fit: contain; background: #fff; border-radius: 6px; }
+  .thumbs figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; word-break: break-all; }
+
+  .docwrap { display: grid; grid-template-columns: 1fr 250px; gap: 26px; align-items: start; }
+  .docwrap.notoc { grid-template-columns: 1fr; }
+  .toc { position: sticky; top: 80px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; max-height: calc(100vh - 110px); overflow: auto; }
+  .toc .h { font-size: 11px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .toc a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--muted); font-size: 13.5px; }
+  .toc a.l3 { padding-left: 20px; font-size: 12.5px; }
+  .toc a:hover { background: var(--panel2); color: var(--text); text-decoration: none; }
+  .md { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 26px 32px; min-width: 0; }
+  .md h1 { font-size: 26px; margin: 0 0 14px; color: var(--silver); }
+  .md h2 { font-size: 20px; margin: 30px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); color: var(--silver); }
+  .md h3 { font-size: 16.5px; margin: 22px 0 8px; color: var(--purple2); }
+  .md p, .md li { color: #dcdce6; } .md ul, .md ol { padding-left: 22px; } .md li { margin: 3px 0; }
+  .md table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 14px; display: block; overflow-x: auto; }
+  .md th, .md td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  .md th { background: var(--panel2); color: var(--silver); }
+  .md tr:nth-child(even) td { background: rgba(255,255,255,.015); }
+  .md code { font-family: var(--mono); font-size: 13px; background: var(--panel2); padding: 1px 5px; border-radius: 4px; color: var(--silver); }
+  .md pre { background: #0d0d14; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow: auto; font-size: 13px; line-height: 1.5; }
+  .md pre code { background: none; padding: 0; color: #d6d6e6; }
+  .md blockquote { margin: 12px 0; padding: 8px 14px; border-left: 3px solid var(--purple); background: var(--purple3); border-radius: 0 8px 8px 0; }
+  .md img { max-width: 100%; border-radius: 8px; background: #fff; }
+  .md hr { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
+  .md.code pre { margin: 0; }
+  .md > h1:first-child { display: none; }            /* Titel steht schon im Kopf */
+  .md.code table { font-size: 12.5px; margin: 0; }   /* CSV: breite Tabellen */
+  .md.code td { min-width: 70px; }
+  .flash { animation: flash 1.6s ease; } @keyframes flash { 0%, 40% { background: rgba(139,92,246,.35); } 100% { background: transparent; } }
+
+  .back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
+
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: none; place-items: center; z-index: 100; cursor: zoom-out; }
+  .lightbox.on { display: grid; } .lightbox img { max-width: 92vw; max-height: 86vh; border-radius: 10px; background: #fff; }
+  .lightbox .cap { color: var(--silver); text-align: center; margin-top: 10px; font-size: 14px; }
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); opacity: 0; background: var(--purple); color: #fff;
+           padding: 9px 16px; border-radius: 10px; font-size: 14px; transition: all .25s; z-index: 120; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .totop { position: fixed; right: 20px; bottom: 20px; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
+           color: var(--text); font-size: 18px; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 60; }
+  .totop.on { opacity: 1; pointer-events: auto; } .totop:hover { border-color: var(--purple); }
+  footer { margin-top: 50px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; } .pills { justify-content: center; }
+    .links { display: none; } .search { flex: 1; } .docwrap { grid-template-columns: 1fr; } .toc { display: none; }
+    .frow { grid-template-columns: 30px 1fr; } .frow .sz, .frow .dt { display: none; } .md { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="navin">
+    <a class="logo" href="#start"><span class="g">GAME</span>BOY<span class="x">PI</span></a>
+    <div class="links" id="links">
+      <a href="#start"><span class="n">1</span>Start</a>
+      <a href="#ichwill"><span class="n">2</span>Ich will …</a>
+      <a href="#fortschritt"><span class="n">3</span>Fortschritt</a>
+      <a href="#einkauf"><span class="n">4</span>Einkauf</a>
+      <a href="#karte"><span class="n">5</span>Karte</a>
+      <a href="#ordner"><span class="n">6</span>Ordner</a>
+      <a href="#bilder"><span class="n">7</span>Bilder</a>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="Alles durchsuchen: Datei, Thema …" autocomplete="off"><kbd>/</kbd>
+      <div class="results hidden" id="results"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- =================== STARTSEITE =================== -->
+<main class="wrap" id="home">
+
+<section id="start" style="margin-top:14px">
+  <div class="hero">
+    <div class="gb">
+      <div class="bezel"><div class="screen">
+        <b>GAMEBOYPI v1.2</b><br>&gt; Design ....... OK<br>&gt; Prüfungen .... OK<br>&gt; Einkauf ...... 50%<br>&gt; Bau .......... --<br>
+        <span id="scr">Pfeile = navigieren</span> <span class="cursor"></span>
+      </div></div>
+      <div class="brand">G B <span>X</span></div>
+      <div class="pad">
+        <div class="dpad">
+          <button class="u" data-dir="-1" title="vorheriger Bereich">▲</button><button class="l" data-dir="-1" title="vorheriger Bereich">◀</button>
+          <div class="c"></div>
+          <button class="r" data-dir="1" title="nächster Bereich">▶</button><button class="d" data-dir="1" title="nächster Bereich">▼</button>
+        </div>
+        <div class="ab"><button id="bB" title="B: nach oben">B</button><button id="bA" title="A: README lesen">A</button></div>
+      </div>
+      <div class="ss"><button id="bSel" title="Select: Suche">SELECT</button><button id="bSta" title="Start: Fortschritt">START</button></div>
+    </div>
+    <div>
+      <h1>Wo liegt <span class="x">was?</span></h1>
+      <p class="lead">Dein Wegweiser für den GameboyPi. Klick dich durch Ordner und Dokumente direkt hier in der Seite, schön formatiert. Mit ← oder dem Zurück-Knopf kommst du immer zurück.</p>
+      <div class="pills">
+        <span class="pill ok">● Design fertig &amp; geprüft</span><span class="pill ok">● GitHub aktuell</span>
+        <span class="pill warn">● Noch nicht gebaut</span><span class="pill warn">● Nichts bestellt</span>
+      </div>
+      <div class="bar"><div id="bar"></div></div>
+      <div class="barlabel"><span>Projektfortschritt</span><span id="barpct">–</span></div>
+      <div class="keys"><span><kbd>/</kbd> alles durchsuchen</span><span><kbd>←</kbd><kbd>→</kbd> Bereich wechseln</span><span><kbd>1</kbd>–<kbd>7</kbd> springen</span><span><kbd>Backspace</kbd> zurück</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="ichwill">
+  <h2 class="sec"><span class="num">02</span>Ich will … <small>die häufigsten Wege</small></h2>
+  <div class="grid" id="cards"></div>
+</section>
+
+<section id="fortschritt">
+  <h2 class="sec"><span class="num">03</span>Fortschritt <small>abhaken, wenn erledigt; dein Browser merkt es sich</small></h2>
+  <div class="steps" id="steps"></div>
+</section>
+
+<section id="einkauf">
+  <h2 class="sec"><span class="num">04</span>Einkauf <small>Stand 11.11.2026 · nichts bestellt</small></h2>
+  <div class="shops">
+    <div class="shop amz"><h3>📦 Amazon</h3><div class="price">63,01 €</div>
+      <div class="s">7 Artikel: Display, microSD, Schrauben, Kapton, Schaumband<br>+ 30,29 € gemerkt (Litze, <span class="bad">Akku nicht auf Lager</span>)</div>
+      <a class="btn" href="https://www.amazon.de/gp/cart/view.html">Warenkorb öffnen</a></div>
+    <div class="shop"><h3>🔩 DigiKey</h3><div class="price">76,84 €</div>
+      <div class="s">23 Teile inkl. 25 € Versand: Module, Taster, Widerstände, Lautsprecher …<br>ab 75 € Warenwert gratis Versand</div>
+      <a class="btn" href="https://www.digikey.at/short/f3b0w9n4">Alle 23 Teile öffnen</a></div>
+    <div class="shop jlc"><h3>🟪 JLCPCB · Platine</h3><div class="price">≈ 20–45 €</div>
+      <div class="s">5 Platinen v1.2: Gerber.zip hochladen<br>(dort nicht angemeldet, alter Korb = v1.1)</div>
+      <a class="btn" href="https://cart.jlcpcb.com/quote">Hochladen</a> <a class="btn ghost" href="#/ordner/GameboyPi/bestellung/1_platine_JLCPCB">Gerber-Ordner</a></div>
+  </div>
+  <div class="sumline">Summe ohne Pi, Platine, Druck: <b>170,14 €</b> · fehlt noch: <span class="warn">Raspberry Pi Zero 2 WH</span>, <span class="warn">Akku-Ersatz</span>
+    · <a href="#/doc/GameboyPi/bestellung/Warenkoerbe.md">Komplette Liste ansehen</a></div>
+</section>
+
+<section id="karte">
+  <h2 class="sec"><span class="num">05</span>Karte <small>Kästchen anklicken öffnet den Ordner hier in der Seite</small></h2>
+  <div class="map">
+  <svg viewBox="0 0 1160 640" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Karte der Ablageorte">
+    <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5d5d78"/></marker></defs>
+    <style>
+      .zone { fill: #101018; stroke: #2a2a3b; stroke-width: 1.5; } .zt { fill: #9d9db2; font-size: 13px; letter-spacing: 2px; font-weight: 600; }
+      .box { fill: #1c1c29; stroke: #3a3a50; stroke-width: 1.5; } .hub { fill: #2a2140; stroke: #8b5cf6; stroke-width: 2; }
+      .web { fill: #13283f; stroke: #3b6ea8; stroke-width: 1.5; } .gh { fill: #152418; stroke: #3f8a55; stroke-width: 1.5; }
+      .t1 { fill: #ececf3; font-size: 15px; font-weight: 600; } .t2 { fill: #9d9db2; font-size: 12px; } .t3 { fill: #b79cff; font-size: 12px; }
+      .ln { stroke: #5d5d78; stroke-width: 1.6; fill: none; } .dash { stroke-dasharray: 5 5; }
+    </style>
+    <rect class="zone" x="10" y="10" width="770" height="620" rx="16"/>
+    <text class="zt" x="30" y="38">DEIN PC · C:\Users\bodan\Documents</text>
+    <a xlink:href="#/ordner/Emulator"><rect class="hub" x="30" y="58" width="300" height="150" rx="12"/>
+      <text class="t1" x="48" y="86">📁 Emulator  ← hier starten</text><text class="t2" x="48" y="110">📘 Projektbericht (Word)</text>
+      <text class="t2" x="48" y="131">🛒 GameboyPi_Warenkoerbe.docx</text><text class="t2" x="48" y="152">🧭 Wegweiser.html (diese Seite)</text>
+      <text class="t3" x="48" y="185">Zum Lesen &amp; Einkaufen</text></a>
+    <a xlink:href="#/ordner/GameboyPi"><rect class="hub" x="380" y="58" width="380" height="150" rx="12"/>
+      <text class="t1" x="398" y="86">📁 GameboyPi  (Projekt, Git-Repo)</text><text class="t2" x="398" y="110">README.md · CLAUDE.md · ARCHITECTURE.md</text>
+      <text class="t2" x="398" y="131">In VS Code öffnen · Strg+Shift+B baut alles</text><text class="t2" x="398" y="152">Branch main = neuester Stand (v1.2)</text>
+      <text class="t3" x="398" y="185">Zum Bauen &amp; Ändern ↓</text></a>
+    <path class="ln" d="M570 208 V 240" marker-end="url(#arr)"/><path class="ln" d="M110 250 H 700"/>
+    <path class="ln" d="M110 250 V 262" marker-end="url(#arr)"/><path class="ln" d="M335 250 V 262" marker-end="url(#arr)"/>
+    <path class="ln" d="M560 250 V 262" marker-end="url(#arr)"/><path class="ln" d="M700 250 V 262" marker-end="url(#arr)"/>
+    <a xlink:href="#/ordner/GameboyPi/bestellung"><rect class="box" x="30" y="265" width="215" height="160" rx="10"/>
+      <text class="t1" x="44" y="290">🛍️ bestellung</text><text class="t2" x="44" y="313">1_platine_JLCPCB → Gerber.zip</text>
+      <text class="t2" x="44" y="333">2_bauteile → DigiKey-CSV</text><text class="t2" x="44" y="353">3_3d_druck → STLs + Farben</text>
+      <text class="t2" x="44" y="373">Warenkoerbe.md</text><text class="t3" x="44" y="403">Alles zum Bestellen</text></a>
+    <a xlink:href="#/ordner/GameboyPi/documentation"><rect class="box" x="258" y="265" width="215" height="160" rx="10"/>
+      <text class="t1" x="272" y="290">📚 documentation</text><text class="t2" x="272" y="313">PROJECT_OVERVIEW · FINAL_BOM</text>
+      <text class="t2" x="272" y="333">ASSEMBLY_GUIDE · testing</text><text class="t2" x="272" y="353">project-log (Log, Tests)</text>
+      <text class="t2" x="272" y="373">final-report (docx + pdf)</text><text class="t3" x="272" y="403">Anleitungen &amp; Wissen</text></a>
+    <a xlink:href="#/ordner/GameboyPi/software"><rect class="box" x="486" y="265" width="135" height="160" rx="10"/>
+      <text class="t1" x="500" y="290">💾 software</text><text class="t2" x="500" y="313">setup-guide</text><text class="t2" x="500" y="333">configuration</text>
+      <text class="t2" x="500" y="353">tests</text><text class="t3" x="500" y="403">Für den Pi</text></a>
+    <a xlink:href="#/ordner/GameboyPi/tools"><rect class="box" x="634" y="265" width="126" height="160" rx="10"/>
+      <text class="t1" x="648" y="290">🧰 tools</text><text class="t2" x="648" y="313">Prüfungen</text><text class="t2" x="648" y="333">Bericht</text>
+      <text class="t2" x="648" y="353">STEP-Export</text><text class="t3" x="648" y="403">Hilfsskripte</text></a>
+    <a xlink:href="#/ordner/GameboyPi/electronics"><rect class="box" x="30" y="445" width="355" height="165" rx="10"/>
+      <text class="t1" x="44" y="471">⚡ electronics  (Platine)</text><text class="t2" x="44" y="495">kicad-project → design.py (Quelle!) + KiCad-Projekt</text>
+      <text class="t2" x="44" y="515">gerber → Fertigungsdaten</text><text class="t2" x="44" y="535">schematics → Schaltplan.pdf</text>
+      <text class="t2" x="44" y="555">assembly → Bilder, STEP, Bestückungspläne</text><text class="t3" x="44" y="590">Generiert: nur design.py ändern</text></a>
+    <a xlink:href="#/ordner/GameboyPi/mechanical"><rect class="box" x="405" y="445" width="355" height="165" rx="10"/>
+      <text class="t1" x="419" y="471">🧊 mechanical  (Gehäuse)</text><text class="t2" x="419" y="495">cad-source → gameboy_pi_case.scad (Quelle!)</text>
+      <text class="t2" x="419" y="515">stl → 11 Druckteile</text><text class="t2" x="419" y="535">step → Volumenkörper für andere CAD</text>
+      <text class="t2" x="419" y="555">previews → Vorschaubilder</text><text class="t3" x="419" y="590">Generiert: nur die .scad ändern</text></a>
+    <rect class="zone" x="800" y="10" width="350" height="215" rx="16"/><text class="zt" x="820" y="38">GITHUB · CLOUD</text>
+    <a xlink:href="https://github.com/EduCardBoden/GameboyPi"><rect class="gh" x="820" y="58" width="310" height="150" rx="12"/>
+      <text class="t1" x="838" y="86">🐙 EduCardBoden/GameboyPi</text><text class="t2" x="838" y="110">privat · main = v1.2 (11.11.2026)</text>
+      <text class="t2" x="838" y="131" style="fill:#4ade80">aktuell, alles hochgeladen</text><text class="t2" x="838" y="152">alter Stand: Tag baseline-v1.1</text>
+      <text class="t3" x="838" y="185">Backup / Versionsverlauf</text></a>
+    <path class="ln dash" d="M760 120 H 820" marker-end="url(#arr)"/>
+    <rect class="zone" x="800" y="245" width="350" height="385" rx="16"/><text class="zt" x="820" y="273">ONLINE-SHOPS · WARENKÖRBE</text>
+    <a xlink:href="https://www.amazon.de/gp/cart/view.html"><rect class="web" x="820" y="290" width="310" height="95" rx="12"/>
+      <text class="t1" x="838" y="317">📦 Amazon</text><text class="t2" x="838" y="340">7 Artikel · 63,01 € (+ 30,29 € gemerkt)</text>
+      <text class="t2" x="838" y="361" style="fill:#f87171">Akku derzeit nicht auf Lager</text></a>
+    <a xlink:href="https://www.digikey.at/short/f3b0w9n4"><rect class="web" x="820" y="400" width="310" height="95" rx="12"/>
+      <text class="t1" x="838" y="427">🔩 DigiKey</text><text class="t2" x="838" y="450">23 Teile · 51,84 € + 25 € Versand</text>
+      <text class="t2" x="838" y="471">Link öffnet alle Teile auf einmal</text></a>
+    <a xlink:href="https://cart.jlcpcb.com/quote"><rect class="web" x="820" y="510" width="310" height="100" rx="12"/>
+      <text class="t1" x="838" y="537">🟪 JLCPCB (Platine)</text><text class="t2" x="838" y="560">Gerber.zip aus „bestellung“ hochladen</text>
+      <text class="t2" x="838" y="581">nicht angemeldet · alter Korb = v1.1</text></a>
+    <path class="ln dash" d="M330 160 C 560 230, 700 250, 820 340" marker-end="url(#arr)"/>
+    <path class="ln dash" d="M138 425 C 300 640, 700 640, 820 560" marker-end="url(#arr)" style="opacity:.6"/>
+  </svg>
+  </div>
+  <div class="legend">Lila = Hauptordner · Grau = Unterordner · Blau = Shops · Grün = GitHub · gestrichelt = gehört zusammen</div>
+</section>
+
+<section id="ordner">
+  <h2 class="sec"><span class="num">06</span>Ordner <small>anklicken öffnet die Dateiliste hier in der Seite</small></h2>
+  <div class="folders" id="folders"></div>
+</section>
+
+<section id="bilder">
+  <h2 class="sec"><span class="num">07</span>So sieht es aus <small>Renderings, keine Fotos · anklicken zum Vergrößern</small></h2>
+  <div class="pics" id="pics"></div>
+</section>
+
+<footer id="foot"></footer>
+</main>
+
+<!-- =================== VIEWER =================== -->
+<main class="wrap hidden" id="view"></main>
+
+<div class="lightbox" id="lb"><div><img id="lbimg" alt=""><div class="cap" id="lbcap"></div></div></div>
+<div class="toast" id="toast"></div>
+<button class="totop" id="totop" title="nach oben">↑</button>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ICON = { dir: "📁", md: "📄", word: "📘", pdf: "📕", img: "🖼️", cad: "🧊", zip: "🗜️", csv: "📊", py: "🐍", scad: "📐",
+               kicad: "🔌", gerber: "🟪", link: "🔗", html: "🧭", code: "📜", file: "📎" };
+const HINT = { word: "öffnet in Word", pdf: "öffnet im PDF-Betrachter", cad: "3D-Datei · Pfad kopieren", zip: "Archiv · Pfad kopieren",
+               kicad: "KiCad-Datei", gerber: "Fertigungsdatei", link: "Verknüpfung", html: "Webseite" };
+
+// ---------- Links: "doc:…", "dir:…", "file:…" oder normale URL ----------
+function href(spec) {
+  if (spec.startsWith("doc:")) return "#/doc/" + spec.slice(4);
+  if (spec.startsWith("dir:")) return "#/ordner/" + spec.slice(4);
+  if (spec.startsWith("file:")) { const k = spec.slice(5); const d = k.slice(0, k.lastIndexOf("/")); const e = (DATA.dirs[d] || { e: [] }).e.find(x => d + "/" + x.n === k); return e ? e.u : "#"; }
+  return spec;
+}
+function absPath(key) { const root = key.split("/")[0]; return decodeURI(DATA.roots[root].replace("file:///", "")).replace(/\//g, "\\") + key.slice(root.length).replace(/\//g, "\\"); }
+function fmtSize(b) { return b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(0) + " KB" : (b / 1048576).toFixed(1).replace(".", ",") + " MB"; }
+
+// ---------- Startseite: Kacheln ----------
+const cards = [
+  { ic: "📘", want: "den Projektbericht lesen", where: "Word-Datei im Emulator-Ordner, auch als PDF",
+    btn: [["file:Emulator/GameBoy_Project_Engineering_Documentation.docx", "In Word öffnen"], ["file:GameboyPi/documentation/final-report/GameBoy_Project_Engineering_Documentation.pdf", "als PDF"]] },
+  { ic: "🧭", want: "verstehen, was das Projekt ist", where: "Übersicht und README, hier lesbar",
+    btn: [["doc:GameboyPi/documentation/PROJECT_OVERVIEW.md", "Übersicht lesen"], ["doc:GameboyPi/README.md", "README"]] },
+  { ic: "🛒", want: "sehen, was im Warenkorb ist", where: "Amazon 63,01 € · DigiKey 76,84 €",
+    btn: [["doc:GameboyPi/bestellung/Warenkoerbe.md", "Liste ansehen"], ["file:Emulator/GameboyPi_Warenkoerbe.docx", "als Word"]] },
+  { ic: "💳", want: "Bauteile kaufen", where: "fehlt noch: Pi Zero 2 WH, Akku-Ersatz",
+    btn: [["#einkauf", "Zum Einkauf"], ["doc:GameboyPi/documentation/FINAL_BOM.md", "Stückliste"]] },
+  { ic: "🟪", want: "die Platine bestellen", where: "Gerber.zip bei JLCPCB hochladen",
+    btn: [["doc:GameboyPi/bestellung/1_platine_JLCPCB/JLCPCB_Bestellung.md", "Anleitung"], ["dir:GameboyPi/bestellung/1_platine_JLCPCB", "Ordner"], ["https://cart.jlcpcb.com/quote", "JLCPCB"]] },
+  { ic: "🖨️", want: "das Gehäuse drucken", where: "11 STL-Dateien und Farbliste",
+    btn: [["doc:GameboyPi/bestellung/3_3d_druck/Farbliste.md", "Farbliste"], ["dir:GameboyPi/bestellung/3_3d_druck", "Druckdateien"]] },
+  { ic: "🔧", want: "löten & zusammenbauen", where: "Checkliste und ausführliche Anleitung",
+    btn: [["doc:GameboyPi/documentation/ASSEMBLY_GUIDE.md", "Checkliste"], ["doc:GameboyPi/documentation/assembly-guide.md", "ausführlich"]] },
+  { ic: "📏", want: "nach dem Löten messen", where: "Messplan Teil B",
+    btn: [["doc:GameboyPi/documentation/testing.md@b-inbetriebnahme-messplan-nach-dem-loten", "Messplan"], ["doc:GameboyPi/documentation/TESTING_PLAN.md", "Prüfstrategie"]] },
+  { ic: "💾", want: "die Software einrichten", where: "RetroPie, install.sh, Akku-Dienst",
+    btn: [["doc:GameboyPi/software/setup-guide.md", "Anleitung"], ["dir:GameboyPi/software/configuration", "Dateien für den Pi"]] },
+  { ic: "🔌", want: "Pins & Verdrahtung nachsehen", where: "GPIO-Tabelle, Modul-Pinouts, Schaltplan",
+    btn: [["doc:GameboyPi/documentation/wiring.md", "wiring.md"], ["file:GameboyPi/electronics/schematics/GameboyPi_Schaltplan.pdf", "Schaltplan"]] },
+  { ic: "✏️", want: "die Platine ändern", where: "Quelle: design.py, danach in VS Code Strg+Shift+B",
+    btn: [["doc:GameboyPi/electronics/kicad-project/design.py", "design.py"], ["doc:GameboyPi/documentation/PCB_DESIGN.md", "Platinen-Doku"]] },
+  { ic: "✏️", want: "das Gehäuse ändern", where: "Quelle: gameboy_pi_case.scad",
+    btn: [["doc:GameboyPi/mechanical/cad-source/gameboy_pi_case.scad", ".scad"], ["doc:GameboyPi/documentation/MECHANICAL_DESIGN.md", "Mechanik-Doku"]] },
+  { ic: "📜", want: "sehen, was gemacht wurde", where: "Log, Entscheidungen, Tests, Quellen",
+    btn: [["doc:GameboyPi/documentation/project-log/ACTIVITY_LOG.md", "Log"], ["doc:GameboyPi/documentation/project-log/ENGINEERING_DECISIONS.md", "Entscheidungen"], ["dir:GameboyPi/documentation/project-log", "alle"]] },
+  { ic: "🐙", want: "das Backup auf GitHub sehen", where: "EduCardBoden/GameboyPi (privat, aktuell)",
+    btn: [["https://github.com/EduCardBoden/GameboyPi", "GitHub öffnen"]] },
+];
+$("#cards").innerHTML = cards.map(c => `<div class="card"><div class="ic">${c.ic}</div><div class="want">${c.want}</div><div class="where">${c.where}</div>
+  <div class="row">${c.btn.map((b, i) => `<a class="chip${i ? " sub" : ""}" href="${esc(href(b[0]))}">${b[1]}${i ? "" : " →"}</a>`).join("")}</div></div>`).join("");
+
+const folders = [
+  ["🧭", "Emulator", "Emulator", "Bericht, Warenkorb-Liste, Wegweiser · hier starten"],
+  ["🎮", "GameboyPi", "GameboyPi", "Das ganze Projekt · README, CLAUDE.md"],
+  ["🛍️", "bestellung", "GameboyPi/bestellung", "Platine, Bauteile, 3D-Druck, Warenkörbe"],
+  ["📚", "documentation", "GameboyPi/documentation", "Alle Anleitungen und Technik-Dokumente"],
+  ["⚡", "electronics", "GameboyPi/electronics", "Platine: design.py, Gerber, Schaltplan, Bilder"],
+  ["🧊", "mechanical", "GameboyPi/mechanical", "Gehäuse: .scad, STL, STEP, Vorschaubilder"],
+  ["💾", "software", "GameboyPi/software", "Raspberry-Pi-Einrichtung und Tests"],
+  ["🧰", "tools", "GameboyPi/tools", "Prüf- und Generator-Skripte"],
+  ["🗂️", "Desktop-Archiv", "Desktop-Archiv", "Alte Desktop-Verknüpfungen"],
+];
+$("#folders").innerHTML = folders.filter(f => DATA.dirs[f[2]]).map(f => `<a class="folder" href="#/ordner/${f[2]}"><div class="fi">${f[0]}</div>
+  <div><div class="fn">${f[1]} <span class="badge">${DATA.dirs[f[2]].e.length} Einträge</span></div><div class="fd">${f[3]}</div></div></a>`).join("");
+
+const pics = [["GameboyPi/mechanical/previews/design_front.png", "Gehäuse vorne"], ["GameboyPi/mechanical/previews/design_back.png", "Gehäuse hinten"],
+              ["GameboyPi/electronics/assembly/Platine_vorne.png", "Platine vorne"], ["GameboyPi/electronics/assembly/Platine_hinten.png", "Platine hinten"]];
+$("#pics").innerHTML = pics.map(p => { const u = href("file:" + p[0]); return `<figure data-src="${u}" data-cap="${p[1]}"><img src="${u}" alt="${p[1]}"><figcaption>${p[1]}</figcaption></figure>`; }).join("");
+$("#foot").textContent = "Stand " + DATA.generated + " · Datei: C:\\Users\\bodan\\Documents\\Emulator\\Wegweiser.html · neu erzeugen: python tools/make_wegweiser.py (im GameboyPi-Ordner) · Häkchen werden nur in diesem Browser gespeichert.";
+
+// ---------- Fortschritt ----------
+const steps = [
+  { id: "design", t: "Elektronik, Platine, Gehäuse, Software entworfen", s: "v1.2, alle Prüfungen bestanden", state: "done", fixed: true, w: 5 },
+  { id: "docs", t: "Dokumentation, Bericht, Wegweiser", s: "Emulator-Ordner, GitHub aktuell", state: "done", fixed: true },
+  { id: "carts", t: "Warenkörbe gefüllt", s: "Amazon + DigiKey, Pi und Akku fehlen noch", state: "half" },
+  { id: "pi", t: "Raspberry Pi Zero 2 WH besorgt", s: "derzeit knapp, Reichelt prüfen" },
+  { id: "akku", t: "Akku 103450 besorgt", s: "Amazon-Set nicht auf Lager" },
+  { id: "order", t: "Amazon & DigiKey bestellt", s: "63,01 € + 76,84 €" },
+  { id: "pcb", t: "Platine v1.2 bei JLCPCB bestellt", s: "Gerber im Viewer prüfen, 1–3 Wochen Lieferzeit" },
+  { id: "test", t: "Frontschale probegedruckt", s: "Taster, Display, Klinke einlegen, Bauhöhen messen" },
+  { id: "print", t: "Gehäuse komplett gedruckt", s: "11 Teile, ≈ 70 g PLA" },
+  { id: "solder", t: "Platine gelötet", s: "nach ASSEMBLY_GUIDE.md", w: 2 },
+  { id: "measure", t: "Ohne Pi gemessen", s: "testing.md Teil B 1–3" },
+  { id: "assembly", t: "Zusammengebaut", s: "Display, Module, Akku, Pi, Gehäuse" },
+  { id: "software", t: "Software läuft", s: "RetroPie, install.sh, Tasten, Ton, Ausschalten", w: 2 },
+  { id: "final", t: "Endtests bestanden", s: "Temperatur, Laufzeit, Messwerte eingetragen" },
+];
+let saved = {}; try { saved = JSON.parse(localStorage.getItem("gbpi-steps") || "{}"); } catch (e) {}
+function renderSteps() {
+  const isDone = s => s.fixed ? s.state === "done" : !!saved[s.id];
+  $("#steps").innerHTML = steps.map((s, i) => `<div class="step ${isDone(s) ? "done" : s.state === "half" ? "half" : ""}"><div class="dot">${isDone(s) ? "✓" : i + 1}</div>
+    <div><div class="t">${s.t}</div><div class="s">${s.s}</div></div>
+    ${s.fixed ? '<span class="check">erledigt</span>' : `<label class="check"><input type="checkbox" data-step="${s.id}" ${isDone(s) ? "checked" : ""}>erledigt</label>`}</div>`).join("");
+  const wsum = steps.reduce((a, s) => a + (s.w || 1), 0);
+  const score = steps.reduce((a, s) => a + (s.w || 1) * (isDone(s) ? 1 : s.state === "half" ? .5 : 0), 0);
+  $("#bar").style.width = Math.round(score / wsum * 100) + "%";
+  $("#barpct").textContent = Math.round(score / wsum * 100) + " % · " + steps.filter(isDone).length + " von " + steps.length + " Schritten";
+}
+renderSteps();
+$("#steps").addEventListener("change", e => { const id = e.target.dataset.step; if (!id) return; saved[id] = e.target.checked;
+  try { localStorage.setItem("gbpi-steps", JSON.stringify(saved)); } catch (err) {} renderSteps(); toast(e.target.checked ? "Abgehakt! 🎮" : "Wieder offen"); });
+
+// ---------- Viewer ----------
+function crumbs(key, isDoc) {
+  const parts = key.split("/"); let acc = []; const out = [`<a href="#start">🏠 Übersicht</a>`];
+  parts.forEach((p, i) => { acc.push(p); const k = acc.join("/"); const last = i === parts.length - 1;
+    out.push('<span class="sep">›</span>');
+    out.push(last ? `<span class="cur">${esc(p)}</span>` : `<a href="#/ordner/${esc(k)}">${esc(p)}</a>`); });
+  return `<div class="crumbs">${out.join("")}</div>`;
+}
+function entryLink(dirKey, e) {
+  const k = dirKey + "/" + e.n;
+  if (e.t === "dir") return { h: "#/ordner/" + k, hint: e.c + " Einträge" };
+  if (DATA.docs[k]) return { h: "#/doc/" + k, hint: "", read: true };
+  if (e.t === "img") return { h: e.u, hint: "Bild", img: true };
+  return { h: e.u, hint: HINT[e.t] || "" };
+}
+function showDir(key) {
+  const d = DATA.dirs[key];
+  if (!d) return notFound(key);
+  const imgs = d.e.filter(e => e.t === "img");
+  const rows = d.e.map(e => { const L = entryLink(key, e);
+    return `<a class="frow" href="${esc(L.h)}"${L.img ? ` data-img="${esc(e.u)}" data-cap="${esc(e.n)}"` : ""}${!L.read && e.t !== "dir" && !L.img ? ` data-copyfile="${esc(absPath(key + "/" + e.n))}"` : ""}>
+      <div class="ico">${ICON[e.t] || "📎"}</div>
+      <div><div class="nm">${esc(e.n)}${L.read ? '<span class="badge read">hier lesen</span>' : ""}</div>${L.hint ? `<div class="hint2">${esc(L.hint)}</div>` : ""}</div>
+      <div class="sz">${e.t === "dir" ? "Ordner" : fmtSize(e.s)}</div><div class="dt">${esc(e.m)}</div></a>`; }).join("");
+  const name = key.split("/").pop();
+  $("#view").innerHTML = crumbs(key) + `
+    <div class="vhead"><div><h1>📁 ${esc(name)}</h1><div class="vp">${esc(absPath(key))}</div>${d.d ? `<div class="vd">${esc(d.d)}</div>` : ""}</div>
+      <div class="vacts"><button class="btn ghost" data-copy="${esc(absPath(key))}">📋 Pfad kopieren</button></div></div>
+    ${imgs.length ? `<div class="thumbs">${imgs.map(e => `<figure data-src="${esc(e.u)}" data-cap="${esc(e.n)}"><img src="${esc(e.u)}" alt="" loading="lazy"><figcaption>${esc(e.n)}</figcaption></figure>`).join("")}</div>` : ""}
+    <div class="flist"><div class="frow head"><div></div><div>Name</div><div style="text-align:right">Größe</div><div style="text-align:right">Geändert</div></div>
+    ${rows || '<div class="frow"><div></div><div class="hint2">(leer)</div></div>'}</div>`;
+}
+function showDoc(key, anchor) {
+  const doc = DATA.docs[key];
+  if (!doc) return notFound(key);
+  const dir = key.slice(0, key.lastIndexOf("/"));
+  const toc = doc.toc && doc.toc.length > 2 ? `<aside class="toc"><div class="h">Inhalt</div>${doc.toc.map(t => `<a class="l${t[2]}" href="#/doc/${esc(key)}@${esc(t[0])}">${esc(t[1])}</a>`).join("")}</aside>` : "";
+  const label = { md: "Dokument", csv: "Tabelle", code: "Quelltext" }[doc.k] || "Datei";
+  $("#view").innerHTML = crumbs(key, true) + `
+    <div class="vhead"><div><h1>${doc.k === "md" ? "📄" : doc.k === "csv" ? "📊" : "📜"} ${esc(doc.title)}</h1><div class="vp">${esc(absPath(key))} · ${label} · ${doc.lines} Zeilen</div></div>
+      <div class="vacts"><a class="btn ghost" href="#/ordner/${esc(dir)}">📁 Ordner</a><button class="btn ghost" data-copy="${esc(absPath(key))}">📋 Pfad kopieren</button></div></div>
+    <div class="docwrap${toc ? "" : " notoc"}"><article class="md${doc.k !== "md" ? " code" : ""}">${doc.html}</article>${toc}</div>`;
+  if (anchor) { const el = document.getElementById(anchor);
+    if (el) { requestAnimationFrame(() => { window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "instant" }); el.classList.add("flash"); }); return; } }
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+function notFound(key) { $("#view").innerHTML = crumbs(key) + `<div class="vhead"><div><h1>Nicht gefunden</h1><div class="vd">„${esc(key)}“ ist nicht eingebettet. Wegweiser neu erzeugen: python tools/make_wegweiser.py</div></div></div>`; }
+
+// ---------- Router ----------
+const ids = ["start", "ichwill", "fortschritt", "einkauf", "karte", "ordner", "bilder"];
+const names = ["Start", "Ich will", "Fortschritt", "Einkauf", "Karte", "Ordner", "Bilder"];
+let current = 0;
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  const inView = h.startsWith("/");
+  $("#home").classList.toggle("hidden", inView); $("#view").classList.toggle("hidden", !inView);
+  hideResults();
+  if (h.startsWith("/ordner/")) { showDir(h.slice(8)); window.scrollTo(0, 0); }
+  else if (h.startsWith("/doc/")) { const [k, a] = h.slice(5).split("@"); showDoc(k, a); }
+  else { const el = document.getElementById(h || "start"); if (el) el.scrollIntoView(); else window.scrollTo(0, 0); }
+}
+window.addEventListener("hashchange", route);
+function go(i) { current = Math.max(0, Math.min(ids.length - 1, i)); location.hash = ids[current]; $("#scr").textContent = "> " + names[current];
+  document.getElementById(ids[current]).scrollIntoView(); }
+const obs = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { current = ids.indexOf(en.target.id);
+  document.querySelectorAll("#links a").forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id)); } }), { rootMargin: "-40% 0px -55% 0px" });
+ids.forEach(id => obs.observe(document.getElementById(id)));
+document.querySelectorAll(".dpad button").forEach(b => b.addEventListener("click", () => go(current + Number(b.dataset.dir))));
+$("#bA").addEventListener("click", () => location.hash = "/doc/GameboyPi/README.md");
+$("#bB").addEventListener("click", () => go(0));
+$("#bSel").addEventListener("click", () => q.focus());
+$("#bSta").addEventListener("click", () => go(2));
+
+// ---------- Suche über alles ----------
+const index = [];
+Object.entries(DATA.dirs).forEach(([k, d]) => { index.push({ k, n: k.split("/").pop(), t: "dir", h: "#/ordner/" + k, s: (k + " " + d.d).toLowerCase() });
+  d.e.filter(e => e.t !== "dir").forEach(e => { const fk = k + "/" + e.n; const doc = DATA.docs[fk];
+    index.push({ k: fk, n: e.n, t: e.t, h: doc ? "#/doc/" + fk : e.u, s: (fk + " " + (doc ? doc.title : "")).toLowerCase() }); }); });
+Object.entries(DATA.docs).forEach(([k, d]) => { d._text = d.html.replace(/<[^>]+>/g, " ").toLowerCase(); });
+cards.forEach(c => index.push({ k: "Ich will …", n: c.want, t: "card", h: href(c.btn[0][0]), s: (c.want + " " + c.where).toLowerCase(), ic: c.ic }));
+const q = $("#q"), res = $("#results");
+let sel = -1;
+function hideResults() { res.classList.add("hidden"); sel = -1; }
+function search() {
+  const t = q.value.trim().toLowerCase(); sel = -1;
+  if (t.length < 2) return hideResults();
+  const words = t.split(/\s+/);
+  const hit = s => words.every(w => s.includes(w));
+  const byName = index.filter(x => hit(x.s)).slice(0, 14);
+  const seen = new Set(byName.map(x => x.h));
+  const inText = Object.entries(DATA.docs).filter(([k, d]) => !seen.has("#/doc/" + k) && hit(d._text)).slice(0, 8);
+  let html = "";
+  if (byName.length) html += '<div class="rh">Treffer</div>' + byName.map(x => `<a href="${esc(x.h)}"><span>${x.ic || ICON[x.t] || "📎"}</span><span>${esc(x.n)}<div class="rp">${esc(x.k)}</div></span></a>`).join("");
+  if (inText.length) html += '<div class="rh">Im Text erwähnt</div>' + inText.map(([k, d]) => `<a href="#/doc/${esc(k)}"><span>📄</span><span>${esc(d.title)}<div class="rp">${esc(k)}</div></span></a>`).join("");
+  res.innerHTML = html || '<div class="rh">Nichts gefunden</div>';
+  res.classList.remove("hidden");
+}
+q.addEventListener("input", search);
+q.addEventListener("focus", search);
+q.addEventListener("keydown", e => {
+  const items = [...res.querySelectorAll("a")];
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!items.length) return;
+    sel = (sel + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length; items.forEach((a, i) => a.classList.toggle("sel", i === sel)); items[sel].scrollIntoView({ block: "nearest" }); }
+  else if (e.key === "Enter") { const a = items[sel >= 0 ? sel : 0]; if (a) { a.click(); q.blur(); } }
+});
+document.addEventListener("click", e => { if (!e.target.closest(".search")) hideResults(); });
+res.addEventListener("click", e => { if (e.target.closest("a")) { q.value = ""; hideResults(); } });
+
+// ---------- Kopieren, Bilder, Tasten ----------
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 1800); }
+function copy(txt) { const fb = () => { const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); };
+  (navigator.clipboard ? navigator.clipboard.writeText(txt).catch(fb) : Promise.resolve(fb())).then(() => toast("Pfad kopiert: " + txt)); }
+function lightbox(src, cap) { $("#lbimg").src = src; $("#lbcap").textContent = cap || ""; $("#lb").classList.add("on"); }
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-copy]"); if (c) { copy(c.dataset.copy); return; }
+  const f = e.target.closest("figure[data-src]"); if (f) { lightbox(f.dataset.src, f.dataset.cap); return; }
+  const im = e.target.closest("[data-img]"); if (im) { e.preventDefault(); lightbox(im.dataset.img, im.dataset.cap); return; }
+  const cf = e.target.closest("[data-copyfile]");
+  if (cf && /\.(stl|step|stp|zip|kicad_\w+|g[a-z]{2}|drl|gbrjob|lnk|url|crdownload)$/i.test(cf.getAttribute("href") || "")) { e.preventDefault(); copy(cf.dataset.copyfile); }
+});
+$("#lb").addEventListener("click", () => $("#lb").classList.remove("on"));
+document.addEventListener("keydown", e => {
+  const typing = document.activeElement === q;
+  if (e.key === "/" && !typing) { e.preventDefault(); q.focus(); return; }
+  if (e.key === "Escape") { $("#lb").classList.remove("on"); if (typing) { q.value = ""; hideResults(); q.blur(); } return; }
+  if (typing) return;
+  const inView = !$("#view").classList.contains("hidden");
+  if (e.key === "Backspace" && inView) { e.preventDefault(); history.back(); return; }
+  if (inView) return;
+  if (e.key === "ArrowRight") { e.preventDefault(); go(current + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); go(current - 1); }
+  else if (/^[1-7]$/.test(e.key)) go(Number(e.key) - 1);
+});
+const totop = $("#totop");
+window.addEventListener("scroll", () => totop.classList.toggle("on", window.scrollY > 600));
+totop.addEventListener("click", () => window.scrollTo(0, 0));
+route();
+</script>
+</body>
+</html>

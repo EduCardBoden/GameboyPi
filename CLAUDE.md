@@ -28,6 +28,7 @@ Overview: [README.md](README.md) · How the generators fit together: [ARCHITECTU
 | Consistency design.py ↔ .scad ↔ Pi config (seconds) | `python tools/check_consistency.py` (any Python 3) | seconds |
 | Software unit tests | `python -m pytest software/tests -q` | seconds |
 | STL check (closed shells, mass) | `python tools/stl_report.py` | ~10 s |
+| Wegweiser (user's file/folder browser in Documents/Emulator) | `python tools/make_wegweiser.py` (edit `tools/wegweiser_template.html`, never the output) | seconds |
 | Quick netlist check (no layout change) | `& "$env:LOCALAPPDATA\Programs\KiCad\10.0\bin\python.exe" electronics/kicad-project/check_netlist.py` | seconds |
 
 The PCB build **re-routes the board** with Freerouting. The result differs every run and rewrites tracked files. Run it only when the electronics changed, then check `build/drc.rpt` (0 errors, 0 unconnected) and compare the warning counts with `testing.md`.
